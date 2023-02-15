@@ -8,8 +8,6 @@ public class test : MonoBehaviour
     void Start()
     {
         print("Hello World");
-        print("Hello World");
-        print("Hello World");
     }
 
     // Update is called once per frame
