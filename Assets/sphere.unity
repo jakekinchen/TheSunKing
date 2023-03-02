@@ -356,5 +356,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mini_World_Blend_Swap
       objectReference: {fileID: 0}
+    - target: {fileID: 2481829407492686960, guid: 093ab93c60d444af190a389dc1cac4ff, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 093ab93c60d444af190a389dc1cac4ff, type: 3}
