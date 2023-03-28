@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public static class CameraUtility {
     static readonly Vector3[] cubeCornerOffsets = {
@@ -12,17 +11,6 @@ public static class CameraUtility {
         new Vector3 (1, 1, -1),
         new Vector3 (1, -1, 1),
     };
-
-    public static IEnumerator FadeIn(Camera camera, float fadeSpeed = 1f) {
-        Color targetBackgroundColor = camera.backgroundColor;
-        camera.backgroundColor = Color.black;
-
-        while (camera.backgroundColor != targetBackgroundColor) {
-            camera.backgroundColor = Color.Lerp(camera.backgroundColor, targetBackgroundColor, Time.deltaTime * fadeSpeed);
-            yield return null;
-        }
-    }
-
 
     // http://wiki.unity3d.com/index.php/IsVisibleFrom
     public static bool VisibleFromCamera (Renderer renderer, Camera camera) {

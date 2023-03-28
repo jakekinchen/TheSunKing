@@ -18,7 +18,7 @@ public class PlanetTest : MonoBehaviour {
 	public int lodIndex;
 	public GameObject sun;
 	public GameObject skySphere;
-	//public Light testLight;
+	public Light testLight;
 	CelestialBodyGenerator[] bodies;
 	public float timeOfDay;
 
@@ -35,7 +35,7 @@ public class PlanetTest : MonoBehaviour {
 			}
 			if (sun) {
 				sun.gameObject.SetActive (true);
-				//testLight.gameObject.SetActive (false);
+				testLight.gameObject.SetActive (false);
 			}
 			bodies = FindObjectsOfType<CelestialBodyGenerator> ();
 		}
