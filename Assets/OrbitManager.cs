@@ -17,6 +17,9 @@ namespace Planet
         public Vector3 startPos;
         public Vector3 basePos;
 
+        // Add a public boolean to control orbit and rotation
+        public bool rotateAndOrbit = true;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -37,7 +40,7 @@ namespace Planet
 
             RecalculatePositions(rootObject, Vector2.positiveInfinity); // Figures out where they should be
 
-            InvokeRepeating(nameof(ProcessMovement), 0, 1f); //TODO change to modify the speed
+            InvokeRepeating(nameof(ProcessMovement), 0, .1f); //TODO change to modify the speed
         }
 
         private void CollectObjects(GameObject obj)
@@ -54,23 +57,26 @@ namespace Planet
         }
 
         private void ProcessMovement()
-        {
-            foreach (var satellite in _objects)
+         {
+            // Only update currentRotDegree when rotateAndOrbit is true
+            if (rotateAndOrbit)
             {
-                Debug.unityLogger.Log("Processing Movement");
-                var mObj = satellite.GetComponent<MovementObj>();
-                
-                mObj.currentRotDegree = ((0.01f / mObj.orbitalRadius) * 360f) + mObj.currentRotDegree;
-
-                if (mObj.currentRotDegree >= 360f)
+                foreach (var satellite in _objects)
                 {
-                    mObj.currentRotDegree -= 360f;
+                    Debug.unityLogger.Log("Processing Movement");
+                    var mObj = satellite.GetComponent<MovementObj>();
+                    
+                    mObj.currentRotDegree = ((0.01f / mObj.orbitalRadius) * 360f) + mObj.currentRotDegree;
+
+                    if (mObj.currentRotDegree >= 360f)
+                    {
+                        mObj.currentRotDegree -= 360f;
+                    }
                 }
             }
 
             RecalculatePositions(rootObject, Vector2.positiveInfinity);
         }
-
         private void RecalculatePositions(GameObject obj, Vector3 referencePos)
         {
             MovementObj mObj = obj.GetComponent<MovementObj>();
@@ -78,6 +84,18 @@ namespace Planet
                 mObj.orbitalRadius == 0) // must be neg infinity if specifying the root node
             {
                 obj.transform.position = basePos + startPos; // Set pos to origin
+
+                // Add rotation functionality
+                if (rotateAndOrbit)
+                {
+                    float rotationSpeed = 10f; // Adjust the rotation speed
+                    obj.transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime, Space.Self);
+                }
+                else
+                {
+                    // Tidally lock the rotation
+                    obj.transform.rotation = Quaternion.Euler(obj.transform.rotation.eulerAngles);
+                }
                 foreach (var satellite in mObj.satellites)
                 {
                     RecalculatePositions(satellite, basePos + startPos); // Recalculate based on 
@@ -98,6 +116,18 @@ namespace Planet
                 //Debug.unityLogger.Log("x: " + x + " z: " + y);
 
                 obj.transform.position = new Vector3(x, y, z);
+
+                 // Add rotation functionality
+                if (rotateAndOrbit)
+                {
+                    float rotationSpeed = 10f; // Adjust the rotation speed
+                    obj.transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime, Space.Self);
+                }
+                else
+                {
+                    // Tidally lock the rotation
+                    obj.transform.rotation = Quaternion.Euler(obj.transform.rotation.eulerAngles);
+                }
 
                 foreach (var satellite in mObj.satellites)
                 {
