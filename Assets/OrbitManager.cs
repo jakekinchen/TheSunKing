@@ -40,7 +40,7 @@ namespace Planet
 
             RecalculatePositions(rootObject, Vector2.positiveInfinity); // Figures out where they should be
 
-            InvokeRepeating(nameof(ProcessMovement), 0, .1f); //TODO change to modify the speed
+            InvokeRepeating(nameof(ProcessMovement), 0, .02f); //TODO change to modify the speed
         }
 
         private void CollectObjects(GameObject obj)
@@ -66,7 +66,7 @@ namespace Planet
                     Debug.unityLogger.Log("Processing Movement");
                     var mObj = satellite.GetComponent<MovementObj>();
                     
-                    mObj.currentRotDegree = ((0.01f / mObj.orbitalRadius) * 360f) + mObj.currentRotDegree;
+                    mObj.currentRotDegree = ((0.1f / mObj.orbitalRadius) * 360f) + mObj.currentRotDegree;
 
                     if (mObj.currentRotDegree >= 360f)
                     {
