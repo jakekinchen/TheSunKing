@@ -86,7 +86,7 @@ public class CelestialBodyGenerator : MonoBehaviour {
 			body.shading.SetTerrainProperties (terrainMatInstance, heightMinMax, BodyScale);
 			GameObject terrainHolder = GetOrCreateMeshObject ("Terrain Mesh", null, terrainMatInstance);
 			terrainMeshFilter = terrainHolder.GetComponent<MeshFilter> ();
-			terrainMeshFilter.sharedMesh = lodMeshes[0];
+			terrainMeshFilter.mesh = lodMeshes[0];
 
 			// Add collider
 			MeshCollider collider;

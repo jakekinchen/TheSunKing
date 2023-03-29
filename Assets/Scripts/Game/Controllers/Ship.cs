@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+
 
 public class Ship : GravityObject {
 
@@ -11,6 +13,17 @@ public class Ship : GravityObject {
 	public Transform pilotSeatPoint;
 	public LayerMask groundedMask;
 	public GameObject window;
+	public GameObject targetPlanet;
+
+	public bool NewGravity = true;
+
+	public bool Teleport = true;
+
+	public GameObject SpawnPoint;
+
+	//make a list of all the planets in the scene and select to assign to targetPlanet
+	public List<CelestialBody> planets = new List<CelestialBody>();
+
 
 	[Header ("Handling")]
 	public float thrustStrength = 20;
@@ -45,6 +58,11 @@ public class Ship : GravityObject {
 		targetRot = transform.rotation;
 		smoothedRot = transform.rotation;
 		inputSettings.Begin ();
+		if (Teleport) {
+			//teleport to spawn point
+			FindPlanet ();
+		}
+		
 	}
 
 	void Update () {
@@ -88,6 +106,33 @@ public class Ship : GravityObject {
 
 	void FixedUpdate () {
 		// Gravity
+		if (NewGravity) {CelestialBody[] bodies = NBodySimulation.Bodies;
+    Vector3 gravityOfNearestBody = Vector3.zero;
+    float nearestSurfaceDst = float.MaxValue;
+
+    // Gravity
+    foreach (CelestialBody body in bodies) {
+        float sqrDst = (body.Position - rb.position).sqrMagnitude;
+        Vector3 forceDir = (body.Position - rb.position).normalized;
+        Vector3 acceleration = forceDir * Universe.gravitationalConstant * body.mass / sqrDst;
+        rb.AddForce(acceleration, ForceMode.Acceleration);
+
+        float dstToSurface = Mathf.Sqrt(sqrDst) - body.radius;
+
+        // Find body with strongest gravitational pull
+        if (dstToSurface < nearestSurfaceDst) {
+            nearestSurfaceDst = dstToSurface;
+            gravityOfNearestBody = acceleration;
+        }
+    }
+
+    // Rotate to align with gravity up
+    Vector3 gravityUp = -gravityOfNearestBody.normalized;
+    rb.rotation = Quaternion.FromToRotation(transform.up, gravityUp) * rb.rotation;
+
+    // Move
+    //MoveShip();
+	} else {
 		Vector3 gravity = NBodySimulation.CalculateAcceleration (rb.position);
 		rb.AddForce (gravity, ForceMode.Acceleration);
 
@@ -99,10 +144,20 @@ public class Ship : GravityObject {
 			rb.MoveRotation (smoothedRot);
 		}
 	}
+	
+	}
 
 	void TeleportToBody (CelestialBody body) {
-		rb.velocity = body.velocity;
-		rb.MovePosition (body.transform.position + (transform.position - body.transform.position).normalized * body.radius * 2);
+		Vector3 shipToPlanet = rb.position - body.Position;
+		Vector3 angularVelocity = body.AngularVelocity(rb.position);
+		Vector3 surfaceVelocity = Vector3.Cross(angularVelocity, shipToPlanet);
+		rb.velocity = surfaceVelocity;
+
+		rb.MovePosition (body.transform.position + (transform.position - body.transform.position).normalized * body.radius * 1.15f);
+		SpawnPoint = FindSpawnPoint(body);
+		if (SpawnPoint != null) {
+			 rb.MovePosition(SpawnPoint.transform.position);
+		}
 	}
 
 	int GetInputAxis (KeyCode negativeAxis, KeyCode positiveAxis) {
@@ -208,5 +263,39 @@ public class Ship : GravityObject {
 			return rb;
 		}
 	}
+
+
+	public void FindPlanet () {
+    // Find the game object named Cyclops
+    CelestialBody planet = targetPlanet.GetComponent<CelestialBody>();
+    if (planet) {
+        // Get the CelestialBody component from the found GameObject
+            TeleportToBody(planet);
+        } else {
+            Debug.LogError("Null CelestialBody component attached to Ship's target planet.");
+        }
+	}
+
+	public GameObject FindSpawnPoint(CelestialBody body)
+{
+    // Find all objects with the ShipSpawn tag that are children of the body object
+    GameObject[] spawnPoints = body.transform.GetComponentsInChildren<Transform>()
+        .Where(x => x.CompareTag("ShipSpawn"))
+        .Select(x => x.gameObject)
+        .ToArray();
+
+    if (spawnPoints.Length > 0)
+    {
+        // Return the first found object
+        return spawnPoints[0];
+    }
+    else
+    {
+        Debug.LogError("No object with the ShipSpawn tag found.");
+        return null;
+    }
+}
+
+
 
 }

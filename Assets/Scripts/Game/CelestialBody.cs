@@ -13,8 +13,9 @@ public class CelestialBody : GravityObject {
     public string bodyName = "Unnamed";
     Transform meshHolder;
 
-    public Vector3 velocity { get; private set; }
-    public float mass { get; private set; }
+    public Vector3 velocity { get; set; }
+    public float mass { get; set; }
+
     Rigidbody rb;
 
     void Awake () {
@@ -72,5 +73,19 @@ public class CelestialBody : GravityObject {
             return rb.position;
         }
     }
+
+    public Vector3 AngularVelocity(Vector3 spawnPoint)
+{
+    Vector3 shipToPlanet = spawnPoint - rb.position;
+    float distance = shipToPlanet.magnitude;
+    Vector3 localUp = shipToPlanet.normalized;
+    Vector3 localEast = Vector3.Cross(localUp, Vector3.up).normalized;
+
+    float circumference = 2 * Mathf.PI * distance;
+    float orbitPeriod = circumference / initialVelocity.magnitude;
+
+    return (2 * Mathf.PI / orbitPeriod) * localEast;
+}
+
 
 }

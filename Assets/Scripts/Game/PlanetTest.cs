@@ -25,7 +25,7 @@ public class PlanetTest : MonoBehaviour {
 	void Awake () {
 		if (Application.isPlaying) {
 			skySphere.SetActive (false);
-			if (spawnPlayer) { 
+			if (spawnPlayer) {
 				Destroy (FindObjectOfType<Camera> ().gameObject);
 				Instantiate (playerPrefab, Vector3.up * radius * 1.2f, Quaternion.identity);
 			}
