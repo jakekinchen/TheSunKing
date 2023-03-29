@@ -327,25 +327,25 @@ void HandleMovement() {
 
 	// Movement
 	bool isGrounded = IsGrounded();
+	if(isGrounded) {
+		Debug.Log("Grounded");
+	}
 	Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 	bool running = Input.GetKey(KeyCode.LeftShift);
 	targetVelocity = transform.TransformDirection(input.normalized) * ((running) ? runSpeed : walkSpeed);
 	smoothVelocity = Vector3.SmoothDamp(smoothVelocity, targetVelocity, ref smoothVRef, (isGrounded) ? vSmoothTime : airSmoothTime);
 
-        if (isGrounded) {
-            if (Input.GetKey(KeyCode.Space) && !isFlying) {
-                isFlying = true;
-            } else {
-                // Apply small downward force to prevent player from bouncing when going down slopes
-                rb.AddForce(-transform.up * stickToGroundForce, ForceMode.VelocityChange);
-            }
-        } else {
-            if (isFlying) {
-                rb.AddForce(transform.up * flyForce, ForceMode.VelocityChange);
-            } else {
-                // Gravity and other forces are applied.
-            }
+         if (Input.GetKey(KeyCode.Space)) {
+        if (!isFlying) {
+            isFlying = true;
         }
+        rb.AddForce(transform.up * flyForce, ForceMode.Acceleration);
+    } else {
+        isFlying = false;
+        // Apply small downward force to prevent player from bouncing when going down slopes
+        rb.AddForce(-transform.up * stickToGroundForce, ForceMode.VelocityChange);
+    }
+
 
 
 	// Handle animations
