@@ -1,13 +1,22 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement; 
+
 
 [ExecuteInEditMode]
 public class CelestialBodyGenerator : MonoBehaviour {
 
+	
 	public enum PreviewMode { LOD0, LOD1, LOD2, CollisionRes }
 	public ResolutionSettings resolutionSettings;
 	public PreviewMode previewMode;
+
+	public GameObject crystalPrefab;
+	public int numberOfObjects;
+
+	public string planet; 
+	public GameObject Cube; 
 
 	public bool logTimers;
 
@@ -40,6 +49,7 @@ public class CelestialBodyGenerator : MonoBehaviour {
 		if (InGameMode) {
 			cam = Camera.main;
 			HandleGameModeGeneration ();
+			
 		}
 	}
 
@@ -99,6 +109,8 @@ public class CelestialBodyGenerator : MonoBehaviour {
 			collider.sharedMesh = collisionMesh;
 			LogTimer (collisionBakeTimer, "Mesh collider");
 
+			//SpawnCrystals();
+
 		} else {
 			Debug.Log ("Could not generate mesh");
 		}
@@ -142,6 +154,8 @@ public class CelestialBodyGenerator : MonoBehaviour {
 				if (debugDoubleUpdate && debug_numUpdates < 2) {
 					shadingNoiseSettingsUpdated = true;
 					HandleEditModeGeneration ();
+					SpawnCrystals();
+					
 				}
 				if (debug_numUpdates == 2) {
 					debug_numUpdates = 0;
@@ -455,5 +469,61 @@ public class CelestialBodyGenerator : MonoBehaviour {
 			collider = Mathf.Min (maxAllowedResolution, collider);
 		}
 	}
+
+// loading async scene
+
+IEnumerator LoadAscyncScene(){
+
+	Scene currentScene = SceneManager.GetActiveScene(); 
+	 AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(planet, LoadSceneMode.Single);
+
+	while(!asyncOperation.isDone){
+		yield return null; 
+	}
+
+	SceneManager.MoveGameObjectToScene(Cube, SceneManager.GetSceneByName(planet));
+	SceneManager.UnloadSceneAsync(currentScene); 
+}
+
+
+//Spawning Crytals onto planet 
+
+	private void SpawnCrystals(){
+    for (int i = 0; i < numberOfObjects; i++)
+    {
+        // Randomize the position on the sphere
+        Vector3 randomDirection = Random.onUnitSphere;
+        //float height = body.shape.GetHeight(randomDirection);
+        Vector3 spawnPosition = randomDirection;
+
+        // Instantiate crystal
+        GameObject crystalInstance = Instantiate(Cube, spawnPosition, Quaternion.identity, transform);
+        crystalInstance.transform.up = randomDirection; // Align crystal with the terrain normal
+    }
+}
+
+// float GetScaledHeight(Vector3 randomDirection)
+// {
+//     // Obtain the normalized direction vector
+//     Vector3 normalizedDirection = randomDirection.normalized;
+
+//     // Use the terrain height range based on the normalized direction
+//     float terrainHeight = Mathf.Lerp(heightMinMax.x, heightMinMax.y, body.shape.EvaluateHeight(normalizedDirection));
+
+//     // Multiply the terrain height by the body scale to obtain the scaled height
+//     float scaledHeight = terrainHeight * BodyScale;
+
+//     return scaledHeight;
+// }
+
+//  public float EvaluateHeight(Vector3 normalizedDirection)
+//     {
+//         // Calculate the height of the body along the normalized direction
+//         float height = Mathf.Abs(Vector3.Dot(size, normalizedDirection));
+
+//         return height;
+//     }
+
+
 
 }
