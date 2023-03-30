@@ -66,19 +66,20 @@ public class PlayerController : GravityObject
 
         animator = GetComponentInChildren<Animator>();
         inputSettings.Begin();
-void InitRigidbody() {
+    }
+    void InitRigidbody() {
 	rb = GetComponent<Rigidbody>();
 	rb.interpolation = RigidbodyInterpolation.Interpolate;
 	rb.useGravity = false;
 	rb.isKinematic = false;
 	rb.mass = mass;
-}
+ }
 
-void Update() {
+ void Update() {
 	HandleMovement();
-}
+    }
 
-void HandleMovement() {
+    void HandleMovement() {
 	HandleEditorInput();
 	if (Time.timeScale == 0) {
 		return;
@@ -114,6 +115,7 @@ void HandleMovement() {
         // Apply small downward force to prevent player from bouncing when going down slopes
         rb.AddForce(-transform.up * stickToGroundForce*0.01f, ForceMode.VelocityChange);
     }
+  }
 
     private void Start()
     {
