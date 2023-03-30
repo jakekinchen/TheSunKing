@@ -66,6 +66,53 @@ public class PlayerController : GravityObject
 
         animator = GetComponentInChildren<Animator>();
         inputSettings.Begin();
+void InitRigidbody() {
+	rb = GetComponent<Rigidbody>();
+	rb.interpolation = RigidbodyInterpolation.Interpolate;
+	rb.useGravity = false;
+	rb.isKinematic = false;
+	rb.mass = mass;
+}
+
+void Update() {
+	HandleMovement();
+}
+
+void HandleMovement() {
+	HandleEditorInput();
+	if (Time.timeScale == 0) {
+		return;
+	}
+	// Look input
+	yaw += Input.GetAxisRaw("Mouse X") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
+	pitch -= Input.GetAxisRaw("Mouse Y") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
+	pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
+	float mouseSmoothTime = Mathf.Lerp(0.01f, maxMouseSmoothTime, inputSettings.mouseSmoothing);
+	smoothPitch = Mathf.SmoothDampAngle(smoothPitch, pitch, ref pitchSmoothV, mouseSmoothTime);
+	float smoothYawOld = smoothYaw;
+	smoothYaw = Mathf.SmoothDampAngle(smoothYaw, yaw, ref yawSmoothV, mouseSmoothTime);
+	if (!debug_playerFrozen && Time.timeScale > 0) {
+		cam.transform.localEulerAngles = Vector3.right * smoothPitch;
+		transform.Rotate(Vector3.up * Mathf.DeltaAngle(smoothYawOld, smoothYaw), Space.Self);
+	}
+
+	// Movement
+	bool isGrounded = IsGrounded();
+	
+	Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+	bool running = Input.GetKey(KeyCode.LeftShift);
+	targetVelocity = transform.TransformDirection(input.normalized) * ((running) ? runSpeed : walkSpeed);
+	smoothVelocity = Vector3.SmoothDamp(smoothVelocity, targetVelocity, ref smoothVRef, (isGrounded) ? vSmoothTime : airSmoothTime);
+
+         if (Input.GetKey(KeyCode.Space)) {
+        if (!isFlying) {
+            isFlying = true;
+        }
+        rb.AddForce(transform.up * flyForce, ForceMode.Acceleration);
+    } else {
+        isFlying = false;
+        // Apply small downward force to prevent player from bouncing when going down slopes
+        rb.AddForce(-transform.up * stickToGroundForce*0.01f, ForceMode.VelocityChange);
     }
 
     private void Start()
