@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SettingsMenu : MonoBehaviour {
 
@@ -55,5 +56,18 @@ public class SettingsMenu : MonoBehaviour {
 			Cursor.visible = false;
 			Cursor.lockState = CursorLockMode.Locked;
 		}
+	}
+
+	public void GotToMainMenu()
+	{
+		Time.timeScale = 1f;
+		inMenu = false;
+		SceneManager.LoadScene("Start");
+	}
+
+	public void QuitGame()
+	{
+		UnityEditor.EditorApplication.isPlaying = false;
+		Application.Quit();
 	}
 }
