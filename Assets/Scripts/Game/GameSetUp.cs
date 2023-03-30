@@ -22,6 +22,8 @@ public class GameSetUp : MonoBehaviour {
 				Vector3 pointAbovePlanet = startBody.transform.position + Vector3.right * startBody.radius * 1.1f;
 				player.transform.position = pointAbovePlanet;
 				player.transform.position = spawnPoint.transform.position;
+				//rotate player by 180 degrees
+				player.transform.rotation = Quaternion.Euler (0, 180, 0);
 				//align player with planet
 				//player.transform.rotation = Quaternion.FromToRotation (Vector3.up, pointAbovePlanet - startBody.transform.position);
 

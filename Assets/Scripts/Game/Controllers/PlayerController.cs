@@ -12,11 +12,15 @@ public class PlayerController : GravityObject
     public float airSmoothTime = 0.5f;
     public float stickToGroundForce = 8;
 
+    public float maxEnergy = 100;
+
+    public bool isFlying = false;
+
     public AtmosphereTrigger atmosphereTrigger;
     public CelestialBody celestialBody;
 
-    public float flyForce = 10;
-    public bool isFlying = false;
+    public float flyForce = .01f;
+    
     public bool isWithinPlanetRange = true;
 
     [Header("Mouse settings")] public float mouseSensitivityMultiplier = 1;
@@ -75,43 +79,55 @@ public class PlayerController : GravityObject
 	rb.isKinematic = false;
 	rb.mass = mass;
  }
-    void HandleMovement() {
-	HandleEditorInput();
-	if (Time.timeScale == 0) {
-		return;
-	}
-	// Look input
-	yaw += Input.GetAxisRaw("Mouse X") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
-	pitch -= Input.GetAxisRaw("Mouse Y") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
-	pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
-	float mouseSmoothTime = Mathf.Lerp(0.01f, maxMouseSmoothTime, inputSettings.mouseSmoothing);
-	smoothPitch = Mathf.SmoothDampAngle(smoothPitch, pitch, ref pitchSmoothV, mouseSmoothTime);
-	float smoothYawOld = smoothYaw;
-	smoothYaw = Mathf.SmoothDampAngle(smoothYaw, yaw, ref yawSmoothV, mouseSmoothTime);
-	if (!debug_playerFrozen && Time.timeScale > 0) {
-		cam.transform.localEulerAngles = Vector3.right * smoothPitch;
-		transform.Rotate(Vector3.up * Mathf.DeltaAngle(smoothYawOld, smoothYaw), Space.Self);
-	}
-
-	// Movement
-	bool isGrounded = IsGrounded();
-	
-	Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-	bool running = Input.GetKey(KeyCode.LeftShift);
-	targetVelocity = transform.TransformDirection(input.normalized) * ((running) ? runSpeed : walkSpeed);
-	smoothVelocity = Vector3.SmoothDamp(smoothVelocity, targetVelocity, ref smoothVRef, (isGrounded) ? vSmoothTime : airSmoothTime);
-
-         if (Input.GetKey(KeyCode.Space)) {
-        if (!isFlying) {
-            isFlying = true;
-        }
-        rb.AddForce(transform.up * flyForce, ForceMode.Acceleration);
-    } else {
-        isFlying = false;
-        // Apply small downward force to prevent player from bouncing when going down slopes
-        rb.AddForce(-transform.up * stickToGroundForce*0.01f, ForceMode.VelocityChange);
+   void HandleMovement()
+{
+    HandleEditorInput();
+    if (Time.timeScale == 0)
+    {
+        return;
     }
-  }
+
+    // Look input
+    yaw += Input.GetAxisRaw("Mouse X") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
+    pitch -= Input.GetAxisRaw("Mouse Y") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
+    pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
+    float mouseSmoothTime = Mathf.Lerp(0.01f, maxMouseSmoothTime, inputSettings.mouseSmoothing);
+    smoothPitch = Mathf.SmoothDampAngle(smoothPitch, pitch, ref pitchSmoothV, mouseSmoothTime);
+    float smoothYawOld = smoothYaw;
+    smoothYaw = Mathf.SmoothDampAngle(smoothYaw, yaw, ref yawSmoothV, mouseSmoothTime);
+
+    if (!debug_playerFrozen && Time.timeScale > 0)
+    {
+        cam.transform.localEulerAngles = Vector3.right * smoothPitch;
+        transform.Rotate(Vector3.up * Mathf.DeltaAngle(smoothYawOld, smoothYaw), Space.Self);
+    }
+
+    // Movement
+    bool isGrounded = IsGrounded();
+    Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+    bool running = Input.GetKey(KeyCode.LeftShift);
+    targetVelocity = transform.TransformDirection(input.normalized) * ((running) ? runSpeed : walkSpeed);
+    smoothVelocity = Vector3.SmoothDamp(smoothVelocity, targetVelocity, ref smoothVRef, (isGrounded) ? vSmoothTime : airSmoothTime);
+
+    // Flying mode
+    if (Input.GetKey(KeyCode.Space) && energy > 0)
+    {
+        energy -= 0.1f;
+        rb.AddForce(transform.up * flyForce*0.05f, ForceMode.VelocityChange);
+        Debug.Log("Flying");
+        isFlying = true;
+    }
+    else
+    {
+        // Apply small downward force to prevent player from bouncing when going down slopes
+        rb.AddForce(-transform.up * stickToGroundForce*0.2f, ForceMode.VelocityChange);
+        isFlying = false;
+    }
+}
+ 
+
+
+
 
     private void Start()
     {
@@ -123,6 +139,7 @@ public class PlayerController : GravityObject
     void Update()
     {
         HandleMovement();
+        UpdateEnergy();
     }
 
    
@@ -153,6 +170,33 @@ public class PlayerController : GravityObject
         return grounded;
     }
 
+     void UpdateEnergy()
+{
+    RaycastHit hit;
+    Vector3 directionToSun = (sun.transform.position - transform.position).normalized;
+    float angleToSun = Vector3.Angle(directionToSun, transform.up);
+
+    if (Physics.Linecast(transform.position, sun.transform.position, out hit))
+    {
+        if (hit.collider.name != "Terrain Mesh" && angleToSun < 100)
+        {
+            energy += isFlying ? -0.005f : 0.05f; // Adjust these values to modify energy consumption and replenishment rates
+        }
+        else
+        {
+            energy -= 0.05f;
+        }
+        energy = Mathf.Clamp(energy, 0, maxEnergy);
+
+        if (_vignette != null)
+        {
+            _vignette.intensity.value = Math.Min(energy / maxEnergy, 0.68f);
+        }
+    }
+}
+
+
+
     void FixedUpdate()
     {
         CelestialBody[] bodies = NBodySimulation.Bodies;
@@ -163,15 +207,15 @@ public class PlayerController : GravityObject
         RaycastHit hit;
         if (Physics.Linecast(transform.position, sun.transform.position, out hit))
         {
-            if (hit.collider.name != "Terrain Mesh")
+            /* if (hit.collider.name != "Terrain Mesh")
             {
-                if (energy < 100)
+                if (energy < maxEnergy && !isFlying)
                 {
-                    energy += 0.025f;
+                    energy += 0.0025f;
                 }
                 else
                 {
-                    energy = 100;
+                    //energy = maxEnergy;
                 }
             }
             else
@@ -182,13 +226,13 @@ public class PlayerController : GravityObject
                 }
                 else
                 {
-                    energy = 0;
+                    //energy = 0;
                 }
             }
             if (_vignette != null)
             {
-                _vignette.intensity.value = Math.Min(energy / 100f, 0.68f);
-            }
+                _vignette.intensity.value = Math.Min(energy / maxEnergy, 0.68f);
+            } */
         }
 
         // Gravity
