@@ -11,8 +11,26 @@ public class PlayerController : GravityObject
     public float vSmoothTime = 0.1f;
     public float airSmoothTime = 0.5f;
     public float stickToGroundForce = 8;
+    public float upVelocity = 0;
+    public float downVelocity = 0;
+    public float maxVelocity = 10;
 
+    [Header("Energy settings")] 
+    public float energyDrainRate = -0.005f;
+    public float energyRechargeRate = 0.05f;
     public float maxEnergy = 100;
+    public float minEnergy = 0;
+    public float energyRechargeDelay = 1;
+    public float energyRechargeDelayTimer = 0;
+    public float energyRechargeDelayTimerMax = 1;
+    public float energyRechargeDelayTimerMin = 0;
+    public float energyRechargeDelayTimerReset = 0;
+    
+    [Header("Energy System")] 
+    public GameObject sun;
+    public float energy;
+    private Vignette _vignette;
+
 
     public bool isFlying = false;
 
@@ -32,10 +50,7 @@ public class PlayerController : GravityObject
     public LayerMask walkableMask;
     public Transform feet;
 
-    [Header("Energy System")] public GameObject sun;
-    public float energy;
-    private Vignette _vignette;
-
+    
 // Private
     Rigidbody rb;
 
@@ -180,13 +195,13 @@ public class PlayerController : GravityObject
     {
         if (hit.collider.name != "Terrain Mesh" && angleToSun < 100)
         {
-            energy += isFlying ? -0.005f : 0.05f; // Adjust these values to modify energy consumption and replenishment rates
+            energy += isFlying ? energyDrainRate : energyRechargeRate; // Adjust these values to modify energy consumption and replenishment rates
         }
         else
         {
             energy -= 0.05f;
         }
-        energy = Mathf.Clamp(energy, 0, maxEnergy);
+        energy = Mathf.Clamp(energy, minEnergy, maxEnergy);
 
         if (_vignette != null)
         {
@@ -194,6 +209,31 @@ public class PlayerController : GravityObject
         }
     }
 }
+    private void CalculateUpDownVelocity()
+{
+    // Calculate the projection of the player's velocity onto the up direction
+    Vector3 upProjection = Vector3.Dot(rb.velocity, transform.up) * transform.up;
+    
+    // If the projection has a positive y-component, it's an upward velocity
+    if (upProjection.y > 0)
+    {
+        upVelocity = upProjection.magnitude;
+        downVelocity = 0;
+    }
+    // If the projection has a negative y-component, it's a downward velocity
+    else if (upProjection.y < 0)
+    {
+        upVelocity = 0;
+        downVelocity = -upProjection.magnitude;
+    }
+    // If the projection has a y-component equal to 0, there's no up or down velocity
+    else
+    {
+        upVelocity = 0;
+        downVelocity = 0;
+    }
+}
+ 
 
 
 
@@ -203,37 +243,6 @@ public class PlayerController : GravityObject
         Vector3 gravityOfNearestBody = Vector3.zero;
         float nearestSurfaceDst = float.MaxValue;
 
-
-        RaycastHit hit;
-        if (Physics.Linecast(transform.position, sun.transform.position, out hit))
-        {
-            /* if (hit.collider.name != "Terrain Mesh")
-            {
-                if (energy < maxEnergy && !isFlying)
-                {
-                    energy += 0.0025f;
-                }
-                else
-                {
-                    //energy = maxEnergy;
-                }
-            }
-            else
-            {
-                if (energy > 0)
-                {
-                    energy -= 0.025f;
-                }
-                else
-                {
-                    //energy = 0;
-                }
-            }
-            if (_vignette != null)
-            {
-                _vignette.intensity.value = Math.Min(energy / maxEnergy, 0.68f);
-            } */
-        }
 
         // Gravity
         foreach (CelestialBody body in bodies)
@@ -260,6 +269,9 @@ public class PlayerController : GravityObject
 
         // Move
         rb.MovePosition(rb.position + smoothVelocity * Time.fixedDeltaTime);
+
+        //CalculateUpDownVelocity();
+        CalculateUpDownVelocity();
     }
 
     void HandleEditorInput()
@@ -298,4 +310,6 @@ public class PlayerController : GravityObject
     {
         get { return rb; }
     }
+
+    
 }
