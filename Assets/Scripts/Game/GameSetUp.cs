@@ -10,6 +10,8 @@ public class GameSetUp : MonoBehaviour {
 
 	public GameObject spawnPoint;
 
+	public GameObject crystal;
+
 	void Start () {
 		Ship ship = FindObjectOfType<Ship> ();
 		PlayerController player = FindObjectOfType<PlayerController> ();
@@ -26,7 +28,14 @@ public class GameSetUp : MonoBehaviour {
 				player.transform.rotation = Quaternion.Euler (0, 180, 0);
 				//align player with planet
 				//player.transform.rotation = Quaternion.FromToRotation (Vector3.up, pointAbovePlanet - startBody.transform.position);
-
+				//transform crystal to a random position near the player on the surface of the planet
+				
+				float distanceFromPlayer = 0.01f;
+				Vector3 randomDirection = Random.onUnitSphere;
+				Vector3 crystalPosition = player.transform.position + randomDirection * distanceFromPlayer;
+				crystalPosition = startBody.transform.position + (crystalPosition - startBody.transform.position).normalized * startBody.radius;
+				crystal.transform.position = crystalPosition;
+				
 				player.SetVelocity (startBody.initialVelocity);
 				ship.transform.position = pointAbovePlanet + Vector3.right * 20;
 				ship.SetVelocity (startBody.initialVelocity);

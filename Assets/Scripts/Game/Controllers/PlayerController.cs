@@ -50,6 +50,10 @@ public class PlayerController : GravityObject
     public LayerMask walkableMask;
     public Transform feet;
 
+    [Header("Crystal Collider")]
+    public CrystalCollider crystalCollider;
+    private bool hasCrystal = false;
+
     
 // Private
     Rigidbody rb;
@@ -140,14 +144,16 @@ public class PlayerController : GravityObject
     }
 }
  
-
-
-
+    private void UpdateHasCrystal(bool value)
+    {
+        hasCrystal = value;
+    }
 
     private void Start()
     {
         var volume = GetComponentInChildren<PostProcessVolume>();
         volume.profile.TryGetSettings(out _vignette);
+        crystalCollider.onCrystalCollision.AddListener(UpdateHasCrystal);
     }
 
 
