@@ -22,9 +22,11 @@ public class CrystalCollider : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player") && !hasCrystal)
         {
+            Debug.Log("Crystal collision");
             hasCrystal = true;
             gameObject.SetActive(false);
             onCrystalCollision.Invoke(hasCrystal);
         }
+        
     }
 }

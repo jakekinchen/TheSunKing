@@ -104,6 +104,8 @@ public class CelestialBodyGenerator : MonoBehaviour {
 		}
 
 		ReleaseAllBuffers ();
+		//console log
+		Debug.Log ("Body generated");
 	}
 
 	// Handles creation of celestial body in the editor

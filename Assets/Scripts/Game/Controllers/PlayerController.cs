@@ -54,6 +54,11 @@ public class PlayerController : GravityObject
     public CrystalCollider crystalCollider;
     private bool hasCrystal = false;
 
+    [Header("Puzzle 1 Settings")]
+    public bool isInPuzzleMode = false;
+    public Shape shape; 
+    public Camera puzzle1Camera;
+
     
 // Private
     Rigidbody rb;
@@ -132,7 +137,7 @@ public class PlayerController : GravityObject
     if (Input.GetKey(KeyCode.Space) && energy > 0)
     {
         energy -= 0.1f;
-        rb.AddForce(transform.up * flyForce*0.05f, ForceMode.VelocityChange);
+        rb.AddForce(transform.up * flyForce*0.07f, ForceMode.VelocityChange);
         Debug.Log("Flying");
         isFlying = true;
     }
@@ -142,7 +147,36 @@ public class PlayerController : GravityObject
         rb.AddForce(-transform.up * stickToGroundForce*0.2f, ForceMode.VelocityChange);
         isFlying = false;
     }
-}
+ }
+
+    // Add this method inside the class
+    public void SwitchPuzzleMode()
+    {
+        isInPuzzleMode = !isInPuzzleMode;
+
+        // Enable/Disable the appropriate UI and controls
+        // You'll need to implement these methods in the UIController script
+        if (isInPuzzleMode)
+        {
+            
+        // Show the 2D puzzle UI
+        // UIController.ShowPuzzleUI();
+
+        // Enable Puzzle1Camera and disable the main player camera
+        puzzle1Camera.enabled = true;
+        cam.enabled = false;
+        }
+        else
+        {
+        // Hide the 2D puzzle UI
+        // UIController.HidePuzzleUI();
+
+        // Disable Puzzle1Camera and enable the main player camera
+        puzzle1Camera.enabled = false;
+        cam.enabled = true;
+        }
+    }
+
  
     private void UpdateHasCrystal(bool value)
     {
@@ -159,8 +193,30 @@ public class PlayerController : GravityObject
 
     void Update()
     {
-        HandleMovement();
+             // Add this condition to only call HandleMovement() when not in puzzle mode
+            if (!isInPuzzleMode)
+            {
+                HandleMovement();
+            }
+            else
+            {
+            // Call the 2D game controls here
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                shape.Rotate();
+            }
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                shape.Flip();
+            }
+        }
         UpdateEnergy();
+
+         // Add this condition to check for the key to toggle puzzle mode
+        if (Input.GetKeyDown(KeyCode.P)) // Change 'P' to the desired key
+        {
+            SwitchPuzzleMode();
+        }
     }
 
    
