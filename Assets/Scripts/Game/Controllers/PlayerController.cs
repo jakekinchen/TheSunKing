@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
 public class PlayerController : GravityObject
 {
+    private Vector3 input;
     // Exposed variables
     [Header("Movement settings")] public float walkSpeed = 8;
     public float runSpeed = 14;
@@ -31,6 +33,20 @@ public class PlayerController : GravityObject
     public float energy;
     private Vignette _vignette;
 
+    [Header("Functional Options")]
+    [SerializeField] private bool useFootsteps = true;
+
+    private bool isCrouching = false;
+    private bool isSprinting = false;
+
+    [Header("Footstep Parameters")]
+    [SerializeField] private float baseStepSpeed = 0.5f;
+    [SerializeField] private float crouchStepMultiplier = 1.5f;
+    [SerializeField] private float sprintStepMultiplier = 0.6f;
+    [SerializeField] private AudioSource footstepAudioSource = default;
+    [SerializeField] private AudioClip[] grassClips = default;
+    private float footstepTimer = 0;
+    private float GetCurrentOffset => isCrouching ? baseStepSpeed * crouchStepMultiplier : isSprinting ? baseStepSpeed * sprintStepMultiplier : baseStepSpeed;
 
     public bool isFlying = false;
 
@@ -119,7 +135,7 @@ public class PlayerController : GravityObject
 
     // Movement
     bool isGrounded = IsGrounded();
-    Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+    input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
     bool running = Input.GetKey(KeyCode.LeftShift);
     targetVelocity = transform.TransformDirection(input.normalized) * ((running) ? runSpeed : walkSpeed);
     smoothVelocity = Vector3.SmoothDamp(smoothVelocity, targetVelocity, ref smoothVRef, (isGrounded) ? vSmoothTime : airSmoothTime);
@@ -155,6 +171,9 @@ public class PlayerController : GravityObject
     {
         HandleMovement();
         UpdateEnergy();
+
+        if (useFootsteps)
+            Handle_Footsteps();
     }
 
    
@@ -233,9 +252,6 @@ public class PlayerController : GravityObject
         downVelocity = 0;
     }
 }
- 
-
-
 
     void FixedUpdate()
     {
@@ -272,6 +288,32 @@ public class PlayerController : GravityObject
 
         //CalculateUpDownVelocity();
         CalculateUpDownVelocity();
+    }
+
+    private void Handle_Footsteps()
+    {
+        if (isFlying) return;
+        if (input == Vector3.zero) return;
+
+        footstepTimer -= Time.deltaTime;
+
+        if (footstepTimer <= 0)
+        {
+            if (Physics.Raycast(cam.transform.position, Vector3.down, out RaycastHit hit, 3))
+            {
+                switch(hit.collider.tag)
+                {
+                    case "footsteps/GRASS":
+                        footstepAudioSource.PlayOneShot(grassClips[UnityEngine.Random.Range(0, grassClips.Length - 1)]);
+                        break;
+                    default:
+                        footstepAudioSource.PlayOneShot(grassClips[UnityEngine.Random.Range(0, grassClips.Length - 1)]);
+                        break;
+                }
+            }
+
+            footstepTimer = GetCurrentOffset;
+        }
     }
 
     void HandleEditorInput()
