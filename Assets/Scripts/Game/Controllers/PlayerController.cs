@@ -158,7 +158,7 @@ public class PlayerController : GravityObject
         // You'll need to implement these methods in the UIController script
         if (isInPuzzleMode)
         {
-            
+
         // Show the 2D puzzle UI
         // UIController.ShowPuzzleUI();
 
@@ -186,8 +186,8 @@ public class PlayerController : GravityObject
     private void Start()
     {
         var volume = GetComponentInChildren<PostProcessVolume>();
-        volume.profile.TryGetSettings(out _vignette);
-        crystalCollider.onCrystalCollision.AddListener(UpdateHasCrystal);
+       // volume.profile.TryGetSettings(out _vignette);
+       crystalCollider.onCrystalCollision.AddListener(UpdateHasCrystal);
     }
 
 
