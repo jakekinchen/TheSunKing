@@ -45,9 +45,9 @@ Material:
     - _BottomPower: 1.6
     - _DissolvePower: 0
     - _DissolveScale: 50
-    - _MaskPower: 0.7
+    - _MaskPower: 0.8
     - _NoiseScale: 50
-    - _WobbleAmount: 0
+    - _WobbleAmount: 1
     - _WobbleDistance: 1
     - _WobbleFrequency: 2
     - _WobbleSpeed: 5
@@ -55,6 +55,6 @@ Material:
     - _Color: {r: 1.0471203, g: 3.9999995, b: 1.445026, a: 0}
     - _DissolveSpeed: {r: 0, g: -0.05, b: 0, a: 0}
     - _DissolveTiling: {r: 1, g: 1, b: 0, a: 0}
-    - _NoiseSpeed: {r: 0, g: -0.2, b: 0, a: 0}
+    - _NoiseSpeed: {r: 0, g: -0.1, b: 0, a: 0}
     - _Tiling: {r: 7, g: 0.1, b: 0, a: 0}
   m_BuildTextureStacks: []
