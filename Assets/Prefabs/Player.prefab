@@ -302,6 +302,7 @@ Transform:
   - {fileID: 5406502976396438920}
   - {fileID: 4076902577718997422}
   - {fileID: 9194538492475086512}
+  - {fileID: 3160106424204356757}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
@@ -352,6 +353,9 @@ MonoBehaviour:
     m_Bits: 1536
   feet: {fileID: 5406502975627480105}
   crystalCollider: {fileID: 0}
+  isInPuzzleMode: 0
+  shape: {fileID: 0}
+  puzzle1Camera: {fileID: 0}
 --- !u!136 &5406502976704646172
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -382,6 +386,101 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 3
+--- !u!1001 &3193137286713445246
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 5406502976704646174}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.00000002682236
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.5291936
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.2827746
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9702747
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.24200644
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -28.01
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 55677fc6fd00a274580471c0edd881dc,
+        type: 3}
+      propertyPath: m_Name
+      value: Character_with_Cape_Text_1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 55677fc6fd00a274580471c0edd881dc, type: 3}
+--- !u!4 &3160106424204356757 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 55677fc6fd00a274580471c0edd881dc,
+    type: 3}
+  m_PrefabInstance: {fileID: 3193137286713445246}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8652304896749433179
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -493,6 +592,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Character_with_Cape_ (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: fa146a52f97b947d3907e0ac50cef3bc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2654713335656134247, guid: fa146a52f97b947d3907e0ac50cef3bc,
         type: 3}
