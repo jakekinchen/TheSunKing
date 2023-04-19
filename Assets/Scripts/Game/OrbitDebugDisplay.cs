@@ -213,9 +213,9 @@ void DrawOrbitCollisions() {
                 if (bodyIndex == j) continue;
 
                 float distance = (drawPoints[bodyIndex][i] - drawPoints[j][i]).magnitude;
-                float combinedRadius = .25f * (Mathf.Pow(virtualBodies[bodyIndex].mass, 1 / 3f) + Mathf.Pow(virtualBodies[j].mass, 1 / 3f));
+                float combinedRadius = (Mathf.Pow(virtualBodies[bodyIndex].mass, 1 / 3f) + Mathf.Pow(virtualBodies[j].mass, 1 / 3f));
 
-                if ((distance <= combinedRadius)&& (i != 0)&& (j != 0)) {
+                if (distance <= combinedRadius) {
                     collisionDetected = true;
                     Debug.Log($"Collision detected between {bodies[bodyIndex].name} and {bodies[j].name} at step {i}");
                     break;
