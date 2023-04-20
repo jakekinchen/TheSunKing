@@ -8,7 +8,7 @@ public class GameController : MonoBehaviour
     public Camera playerCamera;
     public Camera puzzle1Camera;
 
-    public GameManager gameManager;
+    //public GameManager gameManager; // Commented out
 
     public bool gameActive = false;
 
@@ -17,8 +17,10 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        
         puzzle1Canvas.SetActive(false);
         puzzle1Camera.enabled = false;
+        
     }
 
     void Update()
@@ -28,6 +30,11 @@ public class GameController : MonoBehaviour
             gameActive = !gameActive;
             ToggleGame(gameActive);
         }
+    }
+
+    public void ActivateWin()
+    {
+        ToggleGame(false);
     }
 
     void ToggleGame(bool active)
@@ -40,13 +47,14 @@ public class GameController : MonoBehaviour
         ship.SetActive(!active);
         if (active)
         {
-            Time.timeScale = 0;
+           // Time.timeScale = 0;
         }else
         {
-            Time.timeScale = 1;
+            //Time.timeScale = 1;
         }
         
-       
+        /*
+        // Commented out the level-related functionality
         if (active)
         {
             gameManager.LoadLevel(gameManager.currentLevel);
@@ -60,6 +68,7 @@ public class GameController : MonoBehaviour
                 gameManager.currentLevelInstance.SetActive(false);
             }
         }
+        */
     }
 
     public void FindThingsAndDeactivate(bool active){

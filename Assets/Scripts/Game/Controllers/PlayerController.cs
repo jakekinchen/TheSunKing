@@ -54,10 +54,10 @@ public class PlayerController : GravityObject
     public CrystalCollider crystalCollider;
     private bool hasCrystal = false;
 
-    [Header("Puzzle 1 Settings")]
-    public bool isInPuzzleMode = false;
-    public Shape shape; 
-    public Camera puzzle1Camera;
+   // [Header("Puzzle 1 Settings")]
+   // public bool isInPuzzleMode = false;
+   // public Shape shape; 
+   // public Camera puzzle1Camera;
 
     
 // Private
@@ -84,6 +84,9 @@ public class PlayerController : GravityObject
     bool readyToFlyShip;
     bool debug_playerFrozen;
     Animator animator;
+
+    //declare GameControl script
+    public GameController gameController;
 
     void Awake()
     {
@@ -149,33 +152,33 @@ public class PlayerController : GravityObject
     }
  }
 
-    // Add this method inside the class
-    public void SwitchPuzzleMode()
-    {
-        isInPuzzleMode = !isInPuzzleMode;
+    // // Add this method inside the class
+    // public void SwitchPuzzleMode()
+    // {
+    //     isInPuzzleMode = !isInPuzzleMode;
 
-        // Enable/Disable the appropriate UI and controls
-        // You'll need to implement these methods in the UIController script
-        if (isInPuzzleMode)
-        {
+    //     // Enable/Disable the appropriate UI and controls
+    //     // You'll need to implement these methods in the UIController script
+    //     if (isInPuzzleMode)
+    //     {
 
-        // Show the 2D puzzle UI
-        // UIController.ShowPuzzleUI();
+    //     // Show the 2D puzzle UI
+    //     // UIController.ShowPuzzleUI();
 
-        // Enable Puzzle1Camera and disable the main player camera
-        puzzle1Camera.enabled = true;
-        cam.enabled = false;
-        }
-        else
-        {
-        // Hide the 2D puzzle UI
-        // UIController.HidePuzzleUI();
+    //     // Enable Puzzle1Camera and disable the main player camera
+    //     puzzle1Camera.enabled = true;
+    //     cam.enabled = false;
+    //     }
+    //     else
+    //     {
+    //     // Hide the 2D puzzle UI
+    //     // UIController.HidePuzzleUI();
 
-        // Disable Puzzle1Camera and enable the main player camera
-        puzzle1Camera.enabled = false;
-        cam.enabled = true;
-        }
-    }
+    //     // Disable Puzzle1Camera and enable the main player camera
+    //     puzzle1Camera.enabled = false;
+    //     cam.enabled = true;
+    //     }
+    // }
 
  
     private void UpdateHasCrystal(bool value)
@@ -193,30 +196,18 @@ public class PlayerController : GravityObject
 
     void Update()
     {
-             // Add this condition to only call HandleMovement() when not in puzzle mode
-            if (!isInPuzzleMode)
-            {
-                HandleMovement();
-            }
-            else
-            {
-            // Call the 2D game controls here
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                shape.Rotate();
-            }
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                shape.Flip();
-            }
+
+        if(!gameController.gameActive){
+            HandleMovement();
         }
+        else{
+
+        }
+            
+        
         UpdateEnergy();
 
-         // Add this condition to check for the key to toggle puzzle mode
-        if (Input.GetKeyDown(KeyCode.P)) // Change 'P' to the desired key
-        {
-            SwitchPuzzleMode();
-        }
+         
     }
 
    
