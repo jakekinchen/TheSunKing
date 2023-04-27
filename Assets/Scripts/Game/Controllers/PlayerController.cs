@@ -4,6 +4,7 @@ using UnityEngine.Rendering.PostProcessing;
 
 public class PlayerController : GravityObject
 {
+
     // Exposed variables
     [Header("Movement settings")] public float walkSpeed = 8;
     public float runSpeed = 14;
@@ -15,7 +16,7 @@ public class PlayerController : GravityObject
     public float downVelocity = 0;
     public float maxVelocity = 10;
 
-    [Header("Energy settings")] 
+    [Header("Energy settings")]
     public float energyDrainRate = -0.005f;
     public float energyRechargeRate = 0.05f;
     public float maxEnergy = 100;
@@ -25,20 +26,21 @@ public class PlayerController : GravityObject
     public float energyRechargeDelayTimerMax = 1;
     public float energyRechargeDelayTimerMin = 0;
     public float energyRechargeDelayTimerReset = 0;
-    
-    [Header("Energy System")] 
+
+    [Header("Energy System")]
     public GameObject sun;
     public float energy;
     private Vignette _vignette;
 
 
     public bool isFlying = false;
+    public bool isWalking = false;
 
     public AtmosphereTrigger atmosphereTrigger;
     public CelestialBody celestialBody;
 
     public float flyForce = .01f;
-    
+
     public bool isWithinPlanetRange = true;
 
     [Header("Mouse settings")] public float mouseSensitivityMultiplier = 1;
@@ -54,13 +56,13 @@ public class PlayerController : GravityObject
     public CrystalCollider crystalCollider;
     private bool hasCrystal = false;
 
-   // [Header("Puzzle 1 Settings")]
-   // public bool isInPuzzleMode = false;
-   // public Shape shape; 
-   // public Camera puzzle1Camera;
+    // [Header("Puzzle 1 Settings")]
+    // public bool isInPuzzleMode = false;
+    // public Shape shape; 
+    // public Camera puzzle1Camera;
 
-    
-// Private
+
+    // Private
     Rigidbody rb;
 
     Ship spaceship;
@@ -99,58 +101,60 @@ public class PlayerController : GravityObject
         inputSettings.Begin();
     }
 
-    void InitRigidbody() {
-	rb = GetComponent<Rigidbody>();
-	rb.interpolation = RigidbodyInterpolation.Interpolate;
-	rb.useGravity = false;
-	rb.isKinematic = false;
-	rb.mass = mass;
- }
-   void HandleMovement()
-{
-    HandleEditorInput();
-    if (Time.timeScale == 0)
+    void InitRigidbody()
     {
-        return;
+        rb = GetComponent<Rigidbody>();
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.useGravity = false;
+        rb.isKinematic = false;
+        rb.mass = mass;
     }
-
-    // Look input
-    yaw += Input.GetAxisRaw("Mouse X") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
-    pitch -= Input.GetAxisRaw("Mouse Y") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
-    pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
-    float mouseSmoothTime = Mathf.Lerp(0.01f, maxMouseSmoothTime, inputSettings.mouseSmoothing);
-    smoothPitch = Mathf.SmoothDampAngle(smoothPitch, pitch, ref pitchSmoothV, mouseSmoothTime);
-    float smoothYawOld = smoothYaw;
-    smoothYaw = Mathf.SmoothDampAngle(smoothYaw, yaw, ref yawSmoothV, mouseSmoothTime);
-
-    if (!debug_playerFrozen && Time.timeScale > 0)
+    void HandleMovement()
     {
-        cam.transform.localEulerAngles = Vector3.right * smoothPitch;
-        transform.Rotate(Vector3.up * Mathf.DeltaAngle(smoothYawOld, smoothYaw), Space.Self);
-    }
+        HandleEditorInput();
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
 
-    // Movement
-    bool isGrounded = IsGrounded();
-    Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-    bool running = Input.GetKey(KeyCode.LeftShift);
-    targetVelocity = transform.TransformDirection(input.normalized) * ((running) ? runSpeed : walkSpeed);
-    smoothVelocity = Vector3.SmoothDamp(smoothVelocity, targetVelocity, ref smoothVRef, (isGrounded) ? vSmoothTime : airSmoothTime);
+        // Look input
+        yaw += Input.GetAxisRaw("Mouse X") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
+        pitch -= Input.GetAxisRaw("Mouse Y") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
+        pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
+        float mouseSmoothTime = Mathf.Lerp(0.01f, maxMouseSmoothTime, inputSettings.mouseSmoothing);
+        smoothPitch = Mathf.SmoothDampAngle(smoothPitch, pitch, ref pitchSmoothV, mouseSmoothTime);
+        float smoothYawOld = smoothYaw;
+        smoothYaw = Mathf.SmoothDampAngle(smoothYaw, yaw, ref yawSmoothV, mouseSmoothTime);
 
-    // Flying mode
-    if (Input.GetKey(KeyCode.Space) && energy > 0)
-    {
-        energy -= 0.1f;
-        rb.AddForce(transform.up * flyForce*0.07f, ForceMode.VelocityChange);
-        Debug.Log("Flying");
-        isFlying = true;
+        if (!debug_playerFrozen && Time.timeScale > 0)
+        {
+            cam.transform.localEulerAngles = Vector3.right * smoothPitch;
+            transform.Rotate(Vector3.up * Mathf.DeltaAngle(smoothYawOld, smoothYaw), Space.Self);
+        }
+
+        // Movement
+        bool isGrounded = IsGrounded();
+        Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        bool running = Input.GetKey(KeyCode.LeftShift);
+        targetVelocity = transform.TransformDirection(input.normalized) * ((running) ? runSpeed : walkSpeed);
+        smoothVelocity = Vector3.SmoothDamp(smoothVelocity, targetVelocity, ref smoothVRef, (isGrounded) ? vSmoothTime : airSmoothTime);
+
+
+        // Flying mode
+        if (Input.GetKey(KeyCode.Space) && energy > 0)
+        {
+            energy -= 0.1f;
+            rb.AddForce(transform.up * flyForce * 0.07f, ForceMode.VelocityChange);
+            Debug.Log("Flying");
+            isFlying = true;
+        }
+        else
+        {
+            // Apply small downward force to prevent player from bouncing when going down slopes
+            rb.AddForce(-transform.up * stickToGroundForce * 0.2f, ForceMode.VelocityChange);
+            isFlying = false;
+        }
     }
-    else
-    {
-        // Apply small downward force to prevent player from bouncing when going down slopes
-        rb.AddForce(-transform.up * stickToGroundForce*0.2f, ForceMode.VelocityChange);
-        isFlying = false;
-    }
- }
 
     // // Add this method inside the class
     // public void SwitchPuzzleMode()
@@ -180,7 +184,7 @@ public class PlayerController : GravityObject
     //     }
     // }
 
- 
+
     private void UpdateHasCrystal(bool value)
     {
         hasCrystal = value;
@@ -189,28 +193,65 @@ public class PlayerController : GravityObject
     private void Start()
     {
         var volume = GetComponentInChildren<PostProcessVolume>();
-       // volume.profile.TryGetSettings(out _vignette);
-       crystalCollider.onCrystalCollision.AddListener(UpdateHasCrystal);
+        // volume.profile.TryGetSettings(out _vignette);
+        crystalCollider.onCrystalCollision.AddListener(UpdateHasCrystal);
     }
 
 
     void Update()
     {
+        if (isFlying && Input.GetAxisRaw("Vertical") != 0 || isFlying && Input.GetAxisRaw("Horizontal") != 0)
+        {
+            animator.SetBool("isFlying", true);
+            animator.SetBool("isWalking", false);
+        } else if (!isFlying && Input.GetAxisRaw("Vertical") != 0 || !isFlying && Input.GetAxisRaw("Horizontal") != 0)
+        {
+            animator.SetBool("isFlying", false);
+            animator.SetBool("isWalking", true);
+        } else
+        {
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isFlying", false);
+        }
 
-        if(!gameController.gameActive){
+
+
+        //if (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0)
+        //{
+        //    Debug.Log("walking!");
+        //    //animator.Play("walking");
+        //    //animator.SetTrigger("isWalking");
+        //    if (isFlying)
+        //    {
+        //        animator.SetBool("isFlying", true);
+        //    }
+        //    else
+        //    {
+        //        animator.SetBool("isWalking", true);
+        //    }
+        //}
+        //else
+        //{
+        //    animator.SetBool("isWalking", false);
+        //    animator.SetBool("isFlying", false);
+        //}
+
+        if (!gameController.gameActive)
+        {
             HandleMovement();
         }
-        else{
+        else
+        {
 
         }
-            
-        
+
+
         UpdateEnergy();
 
-         
+
     }
 
-   
+
 
     bool IsGrounded()
     {
@@ -238,55 +279,55 @@ public class PlayerController : GravityObject
         return grounded;
     }
 
-     void UpdateEnergy()
-{
-    RaycastHit hit;
-    Vector3 directionToSun = (sun.transform.position - transform.position).normalized;
-    float angleToSun = Vector3.Angle(directionToSun, transform.up);
-
-    if (Physics.Linecast(transform.position, sun.transform.position, out hit))
+    void UpdateEnergy()
     {
-        if (hit.collider.name != "Terrain Mesh" && angleToSun < 100)
+        RaycastHit hit;
+        Vector3 directionToSun = (sun.transform.position - transform.position).normalized;
+        float angleToSun = Vector3.Angle(directionToSun, transform.up);
+
+        if (Physics.Linecast(transform.position, sun.transform.position, out hit))
         {
-            energy += isFlying ? energyDrainRate : energyRechargeRate; // Adjust these values to modify energy consumption and replenishment rates
+            if (hit.collider.name != "Terrain Mesh" && angleToSun < 100)
+            {
+                energy += isFlying ? energyDrainRate : energyRechargeRate; // Adjust these values to modify energy consumption and replenishment rates
+            }
+            else
+            {
+                energy -= 0.05f;
+            }
+            energy = Mathf.Clamp(energy, minEnergy, maxEnergy);
+
+            if (_vignette != null)
+            {
+                _vignette.intensity.value = Math.Min(energy / maxEnergy, 0.68f);
+            }
         }
+    }
+    private void CalculateUpDownVelocity()
+    {
+        // Calculate the projection of the player's velocity onto the up direction
+        Vector3 upProjection = Vector3.Dot(rb.velocity, transform.up) * transform.up;
+
+        // If the projection has a positive y-component, it's an upward velocity
+        if (upProjection.y > 0)
+        {
+            upVelocity = upProjection.magnitude;
+            downVelocity = 0;
+        }
+        // If the projection has a negative y-component, it's a downward velocity
+        else if (upProjection.y < 0)
+        {
+            upVelocity = 0;
+            downVelocity = -upProjection.magnitude;
+        }
+        // If the projection has a y-component equal to 0, there's no up or down velocity
         else
         {
-            energy -= 0.05f;
+            upVelocity = 0;
+            downVelocity = 0;
         }
-        energy = Mathf.Clamp(energy, minEnergy, maxEnergy);
+    }
 
-        if (_vignette != null)
-        {
-            _vignette.intensity.value = Math.Min(energy / maxEnergy, 0.68f);
-        }
-    }
-}
-    private void CalculateUpDownVelocity()
-{
-    // Calculate the projection of the player's velocity onto the up direction
-    Vector3 upProjection = Vector3.Dot(rb.velocity, transform.up) * transform.up;
-    
-    // If the projection has a positive y-component, it's an upward velocity
-    if (upProjection.y > 0)
-    {
-        upVelocity = upProjection.magnitude;
-        downVelocity = 0;
-    }
-    // If the projection has a negative y-component, it's a downward velocity
-    else if (upProjection.y < 0)
-    {
-        upVelocity = 0;
-        downVelocity = -upProjection.magnitude;
-    }
-    // If the projection has a y-component equal to 0, there's no up or down velocity
-    else
-    {
-        upVelocity = 0;
-        downVelocity = 0;
-    }
-}
- 
 
 
 
@@ -364,5 +405,5 @@ public class PlayerController : GravityObject
         get { return rb; }
     }
 
-    
+
 }
