@@ -6,6 +6,8 @@ public class SolarSystemSpawner : MonoBehaviour {
 
 	public CelestialBodyGenerator.ResolutionSettings resolutionSettings;
 
+	public bool editModeGeneration = false;
+
 	void Awake () {
 		Spawn (0);
 	}
@@ -21,6 +23,12 @@ public class SolarSystemSpawner : MonoBehaviour {
 			if (body.bodyType == CelestialBody.BodyType.Sun) {
 				continue;
 			}
+
+			if (editModeGeneration && body.name != "Humble Abode")
+        {
+            continue;
+        }
+
 
 			BodyPlaceholder placeholder = body.gameObject.GetComponentInChildren<BodyPlaceholder> ();
 			var template = placeholder.bodySettings;

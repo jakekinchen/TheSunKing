@@ -21,6 +21,10 @@ public class NBodySimulation : MonoBehaviour {
          if (!useRungeKutta){
         for (int i = 0; i < bodies.Length; i++) {
             Vector3 acceleration = CalculateAcceleration (bodies[i].Position, bodies[i]);
+            if(bodies[i].Position == Vector3.zero) {
+                Debug.Log ("Position is zero!");
+                acceleration = Vector3.zero;
+            }
             bodies[i].UpdateVelocity (acceleration, Universe.physicsTimeStep);
             //bodies[i].UpdateVelocity (bodies, Universe.physicsTimeStep);
         }

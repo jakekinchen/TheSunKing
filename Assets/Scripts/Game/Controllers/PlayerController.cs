@@ -192,9 +192,13 @@ public class PlayerController : GravityObject
 
     private void Start()
     {
+        if (_vignette){
         var volume = GetComponentInChildren<PostProcessVolume>();
+        }
         // volume.profile.TryGetSettings(out _vignette);
+       if (crystalCollider){
         crystalCollider.onCrystalCollision.AddListener(UpdateHasCrystal);
+       }
     }
 
 
@@ -235,7 +239,7 @@ public class PlayerController : GravityObject
         //    animator.SetBool("isWalking", false);
         //    animator.SetBool("isFlying", false);
         //}
-
+        if(gameController){
         if (!gameController.gameActive)
         {
             HandleMovement();
@@ -244,9 +248,14 @@ public class PlayerController : GravityObject
         {
 
         }
+        }
+        
+        if (sun){
 
 
         UpdateEnergy();
+        }
+         
 
 
     }

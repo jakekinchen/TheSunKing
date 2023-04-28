@@ -97,6 +97,12 @@ public class CelestialBodyGenerator : MonoBehaviour {
 			var collisionBakeTimer = System.Diagnostics.Stopwatch.StartNew ();
 			MeshBaker.BakeMeshImmediate (collisionMesh);
 			collider.sharedMesh = collisionMesh;
+
+			// Make the Rigidbody kinematic if the MeshCollider is non-convex
+			if (!collider.convex && terrainHolder.TryGetComponent<Rigidbody>(out Rigidbody rigidbody)) {
+				rigidbody.isKinematic = true;
+			}
+
 			LogTimer (collisionBakeTimer, "Mesh collider");
 
 		} else {
@@ -107,6 +113,18 @@ public class CelestialBodyGenerator : MonoBehaviour {
 		//console log
 		Debug.Log ("Body generated");
 	}
+	
+	public void GenerateTerrainInEditMode()
+{
+    if (CanGenerateMesh())
+    {
+        var terrainMeshTimer = System.Diagnostics.Stopwatch.StartNew();
+        heightMinMax = GenerateTerrainMesh(ref previewMesh, PickTerrainRes());
+
+        LogTimer(terrainMeshTimer, "Generate terrain mesh");
+        DrawEditModeMesh();
+    }
+}
 
 	// Handles creation of celestial body in the editor
 	// This allows for updating the shape/shading settings
