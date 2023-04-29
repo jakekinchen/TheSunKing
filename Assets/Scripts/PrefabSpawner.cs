@@ -2,46 +2,41 @@ using UnityEngine;
 
 public class PrefabSpawner : MonoBehaviour
 {
+    public GameObject terrainObject;
     public GameObject prefab;
-    public int numberOfPrefabs;
-    public float spawnRadius;
-    public float heightOffset;
-    public float rotationRandomness;
+    public int numberOfInstances;
+    public float distanceFromSurface;
 
-    [Range(0, 1)]
-    public float scaleMin;
-    [Range(0, 1)]
-    public float scaleMax;
+    private Mesh terrainMesh;
+    private Vector3[] vertices;
+    private Transform celestialBodyTransform;
 
-    public LayerMask terrainLayer;
-
-    public void SpawnPrefabs()
+    void Start()
     {
-        if (prefab == null) return;
-
-        for (int i = 0; i < numberOfPrefabs; i++)
+        MeshFilter terrainMeshFilter = terrainObject.GetComponent<MeshFilter>();
+        if (terrainMeshFilter != null)
         {
-            Vector3 randomPointOnSphere = Random.onUnitSphere * spawnRadius;
-            Vector3 spawnPosition = transform.position + randomPointOnSphere;
+            terrainMesh = terrainMeshFilter.sharedMesh;
+            vertices = terrainMesh.vertices;
+            celestialBodyTransform = terrainObject.transform.parent;
 
-            RaycastHit hit;
-            if (Physics.Raycast(spawnPosition + Vector3.up * 500f, Vector3.down, out hit, 1000f, terrainLayer))
-            {
-                spawnPosition = hit.point + Vector3.up * heightOffset;
+            SpawnPrefabs();
+        }
+        else
+        {
+            Debug.LogError("Terrain object does not have a MeshFilter component.");
+        }
+    }
 
-                Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-                Quaternion randomRotation = Quaternion.Euler(
-                    Random.Range(-rotationRandomness, rotationRandomness),
-                    Random.Range(-rotationRandomness, rotationRandomness),
-                    Random.Range(-rotationRandomness, rotationRandomness)
-                );
+    private void SpawnPrefabs()
+    {
+        for (int i = 0; i < numberOfInstances; i++)
+        {
+            int randomIndex = Random.Range(0, vertices.Length);
+            Vector3 spawnPosition = celestialBodyTransform.TransformPoint(vertices[randomIndex]) + celestialBodyTransform.TransformDirection(vertices[randomIndex]) * distanceFromSurface;
+            Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, celestialBodyTransform.TransformDirection(vertices[randomIndex]));
 
-                GameObject newPrefab = Instantiate(prefab, spawnPosition, surfaceRotation * randomRotation);
-                newPrefab.transform.parent = transform;
-
-                float randomScale = Random.Range(scaleMin, scaleMax);
-                newPrefab.transform.localScale = new Vector3(randomScale, randomScale, randomScale);
-            }
+            Instantiate(prefab, spawnPosition, spawnRotation, celestialBodyTransform);
         }
     }
 }
