@@ -19,6 +19,48 @@ public class CelestialBody : GravityObject {
 
     Rigidbody rb;
 
+    public float oceanRadius = 200f;
+    public float atmosphereRadius = 300f;
+    public float gravityStrength = 100f; // Strength of the gravity force pulling the player towards the celestial body
+    public Transform playerTransform;
+    public Rigidbody playerRigidbody; // Reference to the player's Rigidbody component
+
+    private void FixedUpdate()
+    {
+        // Apply gravity force when inside the atmosphere
+        if (IsPlayerInsideAtmosphere())
+        {
+            Vector3 gravityDirection = (transform.position - playerTransform.position).normalized;
+            playerRigidbody.AddForce(gravityDirection * gravityStrength, ForceMode.Acceleration);
+        }
+    }
+
+    public bool IsPlayerInsideAtmosphere()
+    {
+        float playerDistance = Vector3.Distance(playerTransform.position, transform.position);
+        return playerDistance <= atmosphereRadius;
+    }
+
+    public void PlayerEnteredAtmosphere()
+    {
+        float playerDistance = Vector3.Distance(playerTransform.position, transform.position);
+        if (playerDistance < oceanRadius)
+        {
+            Vector3 direction = (playerTransform.position - transform.position).normalized;
+            playerTransform.position = transform.position + direction * oceanRadius;
+        }
+    }
+
+    public void PlayerExitedAtmosphere()
+    {
+        float playerDistance = Vector3.Distance(playerTransform.position, transform.position);
+        if (playerDistance > atmosphereRadius)
+        {
+            Vector3 direction = (playerTransform.position - transform.position).normalized;
+            playerTransform.position = transform.position + direction * atmosphereRadius;
+        }
+    }
+
     void Awake () {
 
         rb = GetComponent<Rigidbody> ();
@@ -87,6 +129,5 @@ public class CelestialBody : GravityObject {
 
     return (2 * Mathf.PI / orbitPeriod) * localEast;
 }
-
 
 }

@@ -1,19 +1,27 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class AtmosphereTrigger : MonoBehaviour {
-    public bool isPlayerInside { get; private set; }
+public class AtmosphereTrigger : MonoBehaviour
+{
+    public CelestialBody celestialBody;
+    private bool isPlayerInside;
 
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Player")) {
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && !isPlayerInside)
+        {
             isPlayerInside = true;
-            Debug.Log("Player entered atmosphere");
+            celestialBody.PlayerEnteredAtmosphere();
         }
     }
 
-    private void OnTriggerExit(Collider other) {
-        if (other.CompareTag("Player")) {
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player") && isPlayerInside)
+        {
             isPlayerInside = false;
-            Debug.Log("Player exited atmosphere");
+            celestialBody.PlayerExitedAtmosphere();
         }
     }
 }

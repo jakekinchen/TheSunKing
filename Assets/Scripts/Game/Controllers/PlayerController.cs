@@ -16,6 +16,9 @@ public class PlayerController : GravityObject
     public float downVelocity = 0;
     public float maxVelocity = 10;
 
+    public bool isFlying = false;
+    public bool isWalking = false;
+
     [Header("Energy settings")]
     public float energyDrainRate = -0.005f;
     public float energyRechargeRate = 0.05f;
@@ -33,10 +36,13 @@ public class PlayerController : GravityObject
     private Vignette _vignette;
 
 
-    public bool isFlying = false;
-    public bool isWalking = false;
+    [Header("Environment Trigger settings")] 
+    public bool isSwimming = false;
+    public bool isOutsideEarth = false;
 
+    public WaterTrigger waterTrigger;
     public AtmosphereTrigger atmosphereTrigger;
+
     public CelestialBody celestialBody;
 
     public float flyForce = .01f;
@@ -155,6 +161,35 @@ public class PlayerController : GravityObject
             isFlying = false;
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+{
+    if (other.CompareTag("WaterTrigger"))
+    {
+        isSwimming = true;
+        Debug.Log("Swimming");
+    }
+    else if (other.CompareTag("AtmosphereTrigger"))
+    {
+        isOutsideEarth = false;
+    }
+}
+
+private void OnTriggerExit(Collider other)
+{
+    if (other.CompareTag("WaterTrigger"))
+    {
+        isSwimming = false;
+        Debug.Log("Not Swimming");
+    }
+    else if (other.CompareTag("AtmosphereTrigger"))
+    {
+        isOutsideEarth = true;
+        energy = 0;
+        Debug.Log("Outside Earth");
+    }
+}
+
 
     // // Add this method inside the class
     // public void SwitchPuzzleMode()
