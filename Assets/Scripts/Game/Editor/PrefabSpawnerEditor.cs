@@ -1,18 +1,17 @@
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 [CustomEditor(typeof(PrefabSpawner))]
 public class PrefabSpawnerEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        base.OnInspectorGUI();
+        DrawDefaultInspector();
 
-        PrefabSpawner spawner = (PrefabSpawner)target;
-
-        if (GUILayout.Button("Spawn Prefabs"))
+        PrefabSpawner prefabSpawner = (PrefabSpawner)target;
+        if (GUILayout.Button("Generate Prefabs"))
         {
-            spawner.SpawnPrefabs();
+            prefabSpawner.GeneratePrefabs();
         }
     }
 }

@@ -20,7 +20,7 @@ public class PrefabSpawner : MonoBehaviour
             vertices = terrainMesh.vertices;
             celestialBodyTransform = terrainObject.transform.parent;
 
-            SpawnPrefabs();
+            GeneratePrefabs(); // Change the method name here
         }
         else
         {
@@ -28,7 +28,7 @@ public class PrefabSpawner : MonoBehaviour
         }
     }
 
-    private void SpawnPrefabs()
+    public void GeneratePrefabs() // Change the method name here
     {
         for (int i = 0; i < numberOfInstances; i++)
         {
