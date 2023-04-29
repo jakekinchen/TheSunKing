@@ -13,5 +13,15 @@ public class PrefabSpawnerEditor : Editor
         {
             prefabSpawner.GeneratePrefabs();
         }
+
+        if (GUILayout.Button("Add Prefab"))
+        {
+            prefabSpawner.prefabsSettings.Add(new PrefabSettings());
+        }
+
+        if (GUILayout.Button("Remove Last Prefab") && prefabSpawner.prefabsSettings.Count > 0)
+        {
+            prefabSpawner.prefabsSettings.RemoveAt(prefabSpawner.prefabsSettings.Count - 1);
+        }
     }
 }
