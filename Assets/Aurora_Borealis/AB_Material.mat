@@ -52,7 +52,7 @@ Material:
     - _WobbleFrequency: 2
     - _WobbleSpeed: 5
     m_Colors:
-    - _Color: {r: 1.0471203, g: 3.9999995, b: 1.445026, a: 0}
+    - _Color: {r: 3.9999995, g: 1.2286977, b: 1.6335077, a: 0}
     - _DissolveSpeed: {r: 0, g: -0.05, b: 0, a: 0}
     - _DissolveTiling: {r: 1, g: 1, b: 0, a: 0}
     - _NoiseSpeed: {r: 0, g: -0.1, b: 0, a: 0}
