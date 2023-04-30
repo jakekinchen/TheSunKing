@@ -10,6 +10,8 @@ public class PrefabSettings
     public float scaleFactor = 1.0f;
     public float minHeight;
     public float maxHeight;
+    [HideInInspector]
+    public GameObject folder; // Store the folder for each prefab
 }
 
 public class PrefabSpawner : MonoBehaviour
@@ -21,13 +23,20 @@ public class PrefabSpawner : MonoBehaviour
     private Vector3[] vertices;
     private Transform celestialBodyTransform;
 
-    private void OnEnable()
+    public void Initialize()
     {
-        GeneratePrefabs();
-    }
+        GameObject parentFolder = GameObject.Find("Prefab Clones");
+        if (parentFolder == null)
+        {
+            parentFolder = new GameObject("Prefab Clones");
+        }
 
-    public void GeneratePrefabs()
-    {
+        foreach (var prefabSettings in prefabsSettings)
+        {
+            prefabSettings.folder = new GameObject(prefabSettings.prefab.name + " Clones");
+            prefabSettings.folder.transform.parent = parentFolder.transform;
+        }
+
         if (terrainObject == null) return;
 
         MeshFilter terrainMeshFilter = terrainObject.GetComponent<MeshFilter>();
@@ -36,11 +45,6 @@ public class PrefabSpawner : MonoBehaviour
             terrainMesh = terrainMeshFilter.sharedMesh;
             vertices = terrainMesh.vertices;
             celestialBodyTransform = terrainObject.transform.parent;
-
-            foreach (var prefabSettings in prefabsSettings)
-            {
-                SpawnPrefabs(prefabSettings);
-            }
         }
         else
         {
@@ -48,8 +52,10 @@ public class PrefabSpawner : MonoBehaviour
         }
     }
 
-    private void SpawnPrefabs(PrefabSettings settings)
+    public void GeneratePrefabs(PrefabSettings settings)
     {
+        if (terrainObject == null) return;
+
         for (int i = 0; i < settings.numberOfInstances; i++)
         {
             int randomIndex = Random.Range(0, vertices.Length);
@@ -60,9 +66,17 @@ public class PrefabSpawner : MonoBehaviour
 
             if (terrainHeight >= settings.minHeight && terrainHeight <= settings.maxHeight)
             {
-                GameObject spawnedPrefab = Instantiate(settings.prefab, spawnPosition, spawnRotation, celestialBodyTransform);
+                GameObject spawnedPrefab = Instantiate(settings.prefab, spawnPosition, spawnRotation, settings.folder.transform);
                 spawnedPrefab.transform.localScale = Vector3.one * settings.scaleFactor;
             }
+        }
+    }
+
+    public void DeletePrefabs(PrefabSettings settings)
+    {
+        if (settings.folder != null)
+        {
+            DestroyImmediate(settings.folder);
         }
     }
 }

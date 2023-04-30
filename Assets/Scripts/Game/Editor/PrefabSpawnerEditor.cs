@@ -9,9 +9,26 @@ public class PrefabSpawnerEditor : Editor
         DrawDefaultInspector();
 
         PrefabSpawner prefabSpawner = (PrefabSpawner)target;
-        if (GUILayout.Button("Generate Prefabs"))
+
+        if (GUILayout.Button("Initialize Folders"))
         {
-            prefabSpawner.GeneratePrefabs();
+            prefabSpawner.Initialize();
+        }
+
+        for (int i = 0; i < prefabSpawner.prefabsSettings.Count; i++)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(prefabSpawner.prefabsSettings[i].prefab.name);
+            if (GUILayout.Button("Generate"))
+            {
+                prefabSpawner.GeneratePrefabs(prefabSpawner.prefabsSettings[i]);
+            }
+
+                        if (GUILayout.Button("Delete"))
+            {
+                prefabSpawner.DeletePrefabs(prefabSpawner.prefabsSettings[i]);
+            }
+            GUILayout.EndHorizontal();
         }
 
         if (GUILayout.Button("Add Prefab"))
@@ -25,3 +42,4 @@ public class PrefabSpawnerEditor : Editor
         }
     }
 }
+
