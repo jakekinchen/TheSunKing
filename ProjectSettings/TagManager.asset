@@ -9,6 +9,7 @@ TagManager:
   - Humble Abode
   - WaterTrigger
   - AtmosphereTrigger
+  - flythroughCam
   layers:
   - Default
   - TransparentFX

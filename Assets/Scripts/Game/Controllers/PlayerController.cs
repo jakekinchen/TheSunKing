@@ -36,7 +36,7 @@ public class PlayerController : GravityObject
     private Vignette _vignette;
 
 
-    [Header("Environment Trigger settings")] 
+    [Header("Environment Trigger settings")]
     public bool isSwimming = false;
     public bool isOutsideEarth = false;
 
@@ -163,32 +163,32 @@ public class PlayerController : GravityObject
     }
 
     private void OnTriggerEnter(Collider other)
-{
-    if (other.CompareTag("WaterTrigger"))
     {
-        isSwimming = true;
-        Debug.Log("Swimming");
+        if (other.CompareTag("WaterTrigger"))
+        {
+            isSwimming = true;
+            Debug.Log("Swimming");
+        }
+        else if (other.CompareTag("AtmosphereTrigger"))
+        {
+            isOutsideEarth = false;
+        }
     }
-    else if (other.CompareTag("AtmosphereTrigger"))
-    {
-        isOutsideEarth = false;
-    }
-}
 
-private void OnTriggerExit(Collider other)
-{
-    if (other.CompareTag("WaterTrigger"))
+    private void OnTriggerExit(Collider other)
     {
-        isSwimming = false;
-        Debug.Log("Not Swimming");
+        if (other.CompareTag("WaterTrigger"))
+        {
+            isSwimming = false;
+            Debug.Log("Not Swimming");
+        }
+        else if (other.CompareTag("AtmosphereTrigger"))
+        {
+            isOutsideEarth = true;
+            energy = 0;
+            Debug.Log("Outside Earth");
+        }
     }
-    else if (other.CompareTag("AtmosphereTrigger"))
-    {
-        isOutsideEarth = true;
-        energy = 0;
-        Debug.Log("Outside Earth");
-    }
-}
 
 
     // // Add this method inside the class
@@ -227,13 +227,15 @@ private void OnTriggerExit(Collider other)
 
     private void Start()
     {
-        if (_vignette){
-        var volume = GetComponentInChildren<PostProcessVolume>();
+        if (_vignette)
+        {
+            var volume = GetComponentInChildren<PostProcessVolume>();
         }
         // volume.profile.TryGetSettings(out _vignette);
-       if (crystalCollider){
-        crystalCollider.onCrystalCollision.AddListener(UpdateHasCrystal);
-       }
+        if (crystalCollider)
+        {
+            crystalCollider.onCrystalCollision.AddListener(UpdateHasCrystal);
+        }
     }
 
 
@@ -243,11 +245,13 @@ private void OnTriggerExit(Collider other)
         {
             animator.SetBool("isFlying", true);
             animator.SetBool("isWalking", false);
-        } else if (!isFlying && Input.GetAxisRaw("Vertical") != 0 || !isFlying && Input.GetAxisRaw("Horizontal") != 0)
+        }
+        else if (!isFlying && Input.GetAxisRaw("Vertical") != 0 || !isFlying && Input.GetAxisRaw("Horizontal") != 0)
         {
             animator.SetBool("isFlying", false);
             animator.SetBool("isWalking", true);
-        } else
+        }
+        else
         {
             animator.SetBool("isWalking", false);
             animator.SetBool("isFlying", false);
@@ -274,23 +278,25 @@ private void OnTriggerExit(Collider other)
         //    animator.SetBool("isWalking", false);
         //    animator.SetBool("isFlying", false);
         //}
-        if(gameController){
-        if (!gameController.gameActive)
+        if (gameController)
         {
-            HandleMovement();
+            if (!gameController.gameActive)
+            {
+                HandleMovement();
+            }
+            else
+            {
+
+            }
         }
-        else
+
+        if (sun)
         {
 
-        }
-        }
-        
-        if (sun){
 
-
-        UpdateEnergy();
+            UpdateEnergy();
         }
-         
+
 
 
     }

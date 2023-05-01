@@ -142,8 +142,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5406502976396438921}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.67, z: 0.276}
+  m_LocalRotation: {x: -0.0008164719, y: -0.9336268, z: 0.358187, w: 0.0065288544}
+  m_LocalPosition: {x: 0.09212031, y: 5.6628823, z: 5.2311645}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -174,10 +174,10 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.1
-  far clip plane: 150000
-  field of view: 60
+  far clip plane: 5000
+  field of view: 40
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -305,6 +305,7 @@ Transform:
   - {fileID: 3160106424204356757}
   - {fileID: 2444524998149708376}
   - {fileID: 2801545407621881148}
+  - {fileID: 1959928064818641010}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
@@ -329,6 +330,8 @@ MonoBehaviour:
   upVelocity: 0
   downVelocity: 0
   maxVelocity: 10
+  isFlying: 0
+  isWalking: 0
   energyDrainRate: -0.005
   energyRechargeRate: 0.05
   maxEnergy: 100
@@ -340,7 +343,9 @@ MonoBehaviour:
   energyRechargeDelayTimerReset: 0
   sun: {fileID: 0}
   energy: 0
-  isFlying: 0
+  isSwimming: 0
+  isOutsideEarth: 0
+  waterTrigger: {fileID: 0}
   atmosphereTrigger: {fileID: 0}
   celestialBody: {fileID: 0}
   flyForce: 0.01
@@ -355,6 +360,7 @@ MonoBehaviour:
     m_Bits: 1536
   feet: {fileID: 5406502975627480105}
   crystalCollider: {fileID: 0}
+  camTransform: {fileID: 5406502976396438920}
   gameController: {fileID: 0}
 --- !u!136 &5406502976704646172
 CapsuleCollider:
@@ -386,6 +392,37 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 3
+--- !u!1 &8421907323157784575
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1959928064818641010}
+  m_Layer: 0
+  m_Name: CameraLookPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1959928064818641010
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8421907323157784575}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.6, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5406502976704646174}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2408211703680514775
 PrefabInstance:
   m_ObjectHideFlags: 0
