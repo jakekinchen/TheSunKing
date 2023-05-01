@@ -13,7 +13,7 @@
 		{
 			CGPROGRAM
 			#pragma vertex vert
-			#pragma fragment frag
+			#pragma fragment frag 
 
 			#include "UnityCG.cginc"
 			#include "../Includes/Math.cginc"
@@ -63,6 +63,8 @@
 			float3 oceanCentre;
 			float oceanRadius;
 			float3 dirToSun;
+
+			
 
 			fixed4 frag (v2f i) : SV_Target
 			{

@@ -7,7 +7,7 @@ public class OceanEffect {
 	Light light;
 	protected Material material;
 
-	public void UpdateSettings (CelestialBodyGenerator generator, Shader shader) {
+	public void UpdateSettings (CelestialBodyGenerator generator, Shader shader, bool useCustomOceanColor, Color customOceanColorA, Color customOceanColorB) {
 		if (material == null || material.shader != shader) {
 			material = new Material (shader);
 		}

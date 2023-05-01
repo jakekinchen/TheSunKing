@@ -6,40 +6,43 @@ public class PrefabSpawnerEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        DrawDefaultInspector();
+        base.OnInspectorGUI();
 
+        GUILayout.Space(10);
         PrefabSpawner prefabSpawner = (PrefabSpawner)target;
 
-        if (GUILayout.Button("Initialize Folders"))
-        {
-            prefabSpawner.Initialize();
-        }
-
+        GUILayout.Label("Individual Prefab Settings Actions:");
         for (int i = 0; i < prefabSpawner.prefabsSettings.Count; i++)
         {
+            GUILayout.Label($"Prefab {i + 1}: " + (prefabSpawner.prefabsSettings[i].prefab == null ? "(Prefab is null)" : prefabSpawner.prefabsSettings[i].prefab.name));
+
             GUILayout.BeginHorizontal();
-            GUILayout.Label(prefabSpawner.prefabsSettings[i].prefab.name);
             if (GUILayout.Button("Generate"))
             {
                 prefabSpawner.GeneratePrefabs(prefabSpawner.prefabsSettings[i]);
             }
 
-                        if (GUILayout.Button("Delete"))
+            if (GUILayout.Button("Delete"))
             {
                 prefabSpawner.DeletePrefabs(prefabSpawner.prefabsSettings[i]);
             }
             GUILayout.EndHorizontal();
-        }
 
-        if (GUILayout.Button("Add Prefab"))
-        {
-            prefabSpawner.prefabsSettings.Add(new PrefabSettings());
-        }
+            prefabSpawner.prefabsSettings[i].prefab = (GameObject)EditorGUILayout.ObjectField("Prefab", prefabSpawner.prefabsSettings[i].prefab, typeof(GameObject), false);
+            prefabSpawner.prefabsSettings[i].numberOfInstances = EditorGUILayout.IntField("Number of Instances", prefabSpawner.prefabsSettings[i].numberOfInstances);
+            prefabSpawner.prefabsSettings[i].distanceFromSurface = EditorGUILayout.FloatField("Distance from Surface", prefabSpawner.prefabsSettings[i].distanceFromSurface);
+            prefabSpawner.prefabsSettings[i].scaleFactor = EditorGUILayout.FloatField("Scale Factor", prefabSpawner.prefabsSettings[i].scaleFactor);
 
-        if (GUILayout.Button("Remove Last Prefab") && prefabSpawner.prefabsSettings.Count > 0)
-        {
-            prefabSpawner.prefabsSettings.RemoveAt(prefabSpawner.prefabsSettings.Count - 1);
+            prefabSpawner.prefabsSettings[i].spawnOnLand = EditorGUILayout.Toggle("Spawn on Land", prefabSpawner.prefabsSettings[i].spawnOnLand);
+            prefabSpawner.prefabsSettings[i].spawnOnOcean = EditorGUILayout.Toggle("Spawn on Ocean", prefabSpawner.prefabsSettings[i].spawnOnOcean);
+            prefabSpawner.prefabsSettings[i].useCustomHeightRange = EditorGUILayout.Toggle("Use Custom Height Range", prefabSpawner.prefabsSettings[i].useCustomHeightRange);
+
+            EditorGUI.BeginDisabledGroup(!prefabSpawner.prefabsSettings[i].useCustomHeightRange);
+            prefabSpawner.prefabsSettings[i].minHeight = EditorGUILayout.FloatField("Min Height", prefabSpawner.prefabsSettings[i].minHeight);
+            prefabSpawner.prefabsSettings[i].maxHeight = EditorGUILayout.FloatField("Max Height", prefabSpawner.prefabsSettings[i].maxHeight);
+            EditorGUI.EndDisabledGroup();
+
+            GUILayout.Space(10);
         }
     }
 }
-

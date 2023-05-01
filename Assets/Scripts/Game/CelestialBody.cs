@@ -20,8 +20,8 @@ public class CelestialBody : GravityObject {
     Rigidbody rb;
 
     public float oceanRadius = 200f;
-    public float atmosphereRadius = 300f;
-    public float gravityStrength = 100f; // Strength of the gravity force pulling the player towards the celestial body
+    public float atmosphereRadius = 250f;
+    public float gravityStrength = 1f; // Strength of the gravity force pulling the player towards the celestial body
     public Transform playerTransform;
     public Rigidbody playerRigidbody; // Reference to the player's Rigidbody component
 
@@ -31,7 +31,7 @@ public class CelestialBody : GravityObject {
         if (IsPlayerInsideAtmosphere())
         {
             Vector3 gravityDirection = (transform.position - playerTransform.position).normalized;
-            playerRigidbody.AddForce(gravityDirection * gravityStrength, ForceMode.Acceleration);
+            //playerRigidbody.AddForce(gravityDirection * gravityStrength, ForceMode.Acceleration);
         }
     }
 

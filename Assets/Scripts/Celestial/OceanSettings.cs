@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu (menuName = "Celestial Body/Ocean")]
 public class OceanSettings : ScriptableObject {
 	public float depthMultiplier = 10;
-	public float alphaMultiplier = 70;
+	public float alphaMultiplier = 10;
 	public Color colA;
 	public Color colB;
 	public Color specularCol = Color.white;

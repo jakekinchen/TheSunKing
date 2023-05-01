@@ -147,7 +147,7 @@ public class PlayerController : GravityObject
 
 
         // Flying mode
-        if (Input.GetKey(KeyCode.Space) && energy > 0)
+        if (Input.GetKey(KeyCode.Space) && energy > 3)
         {
             energy -= 0.1f;
             rb.AddForce(transform.up * flyForce * 0.07f, ForceMode.VelocityChange);
@@ -241,7 +241,8 @@ public class PlayerController : GravityObject
 
     void Update()
     {
-        if (isFlying && Input.GetAxisRaw("Vertical") != 0 || isFlying && Input.GetAxisRaw("Horizontal") != 0)
+        if (isFlying && energy > 3 //&& Input.GetAxisRaw("Vertical") != 0 //|| isFlying && Input.GetAxisRaw("Horizontal") != 0
+        )
         {
             animator.SetBool("isFlying", true);
             animator.SetBool("isWalking", false);
