@@ -14,6 +14,10 @@ public class PlanetEffects : PostProcessingEffect {
 	public bool displayOceans = true;
 	public bool displayAtmospheres = true;
 
+	public bool useCustomOceanColor = false;
+    public Color customOceanColorA = Color.blue;
+    public Color customOceanColorB = Color.cyan;
+
 	List<EffectHolder> effectHolders;
 	List<float> sortDistances;
 
@@ -63,7 +67,7 @@ public class PlanetEffects : PostProcessingEffect {
 				if (displayOceans) {
 					if (effectHolder.oceanEffect != null) {
 
-						effectHolder.oceanEffect.UpdateSettings (effectHolder.generator, oceanShader);
+						effectHolder.oceanEffect.UpdateSettings(effectHolder.generator, oceanShader, useCustomOceanColor, customOceanColorA, customOceanColorB);
 
 						float camDstFromCentre = (camPos - effectHolder.generator.transform.position).magnitude;
 						if (camDstFromCentre < effectHolder.generator.GetOceanRadius ()) {

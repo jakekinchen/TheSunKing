@@ -278,6 +278,7 @@ GameObject:
   - component: {fileID: 5406502976704646175}
   - component: {fileID: 5406502976704646172}
   - component: {fileID: 5406502976704646173}
+  - component: {fileID: 7588693165441917034}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -329,6 +330,8 @@ MonoBehaviour:
   upVelocity: 0
   downVelocity: 0
   maxVelocity: 10
+  isFlying: 0
+  isWalking: 0
   energyDrainRate: -0.005
   energyRechargeRate: 0.05
   maxEnergy: 100
@@ -340,7 +343,9 @@ MonoBehaviour:
   energyRechargeDelayTimerReset: 0
   sun: {fileID: 0}
   energy: 0
-  isFlying: 0
+  isSwimming: 0
+  isOutsideEarth: 0
+  waterTrigger: {fileID: 0}
   atmosphereTrigger: {fileID: 0}
   celestialBody: {fileID: 0}
   flyForce: 0.01
@@ -386,6 +391,18 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 3
+--- !u!114 &7588693165441917034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5406502976704646146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 788a4c773ece74b5f96313a369b4ccf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2408211703680514775
 PrefabInstance:
   m_ObjectHideFlags: 0
