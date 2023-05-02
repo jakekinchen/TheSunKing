@@ -11,6 +11,8 @@ public class BoidSettings : ScriptableObject {
     public float avoidanceRadius = 1;
     public float maxSteerForce = 3;
 
+    public float rotationSpeed = 5f;
+
     [Header("Planet")]
     public float surfaceAdherence = 0.1f;
     public float surfaceSeparationWeight = 1;

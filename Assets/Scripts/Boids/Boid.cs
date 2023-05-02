@@ -87,11 +87,13 @@ Vector3 OptimizedAvoidanceRays()
     }
 
     public void UpdateBoid () {
+
         
         Vector3 acceleration = Vector3.zero;
 
          Vector3 gravityDirection = (planet.position - position).normalized;      
          acceleration += gravityDirection * settings.gravityStrength;
+         Debug.DrawRay(position, gravityDirection, Color.red, 100f);
 
 
         if (target != null) {
@@ -151,7 +153,10 @@ Vector3 OptimizedAvoidanceRays()
         velocity = dir * speed;
 
         cachedTransform.position += velocity * Time.deltaTime;
-        cachedTransform.forward = dir;
+        Vector3 localUp = (position - planet.position).normalized;
+Quaternion targetRotation = Quaternion.LookRotation(dir, localUp);
+cachedTransform.rotation = Quaternion.Slerp(cachedTransform.rotation, targetRotation, settings.rotationSpeed * Time.deltaTime);
+
         position = cachedTransform.position;
         forward = dir;
     }
