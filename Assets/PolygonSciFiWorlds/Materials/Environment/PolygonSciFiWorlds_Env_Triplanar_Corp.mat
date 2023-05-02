@@ -2,13 +2,15 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: PolygonSciFiWorlds_Env_Triplanar_Corp
   m_Shader: {fileID: 4800000, guid: 8e3a7be9db42981418988bc59e1916cb, type: 3}
-  m_ShaderKeywords: 
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -242,6 +244,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _BumpScale: 1
     - _Cliff_Defail_Power: 1
@@ -299,12 +302,13 @@ Material:
     - _EmissiveColor: {r: 1, g: 1, b: 1, a: 0}
     - _EmissiveColor1: {r: 1, g: 1, b: 1, a: 0}
     - _GroundColour: {r: 1, g: 1, b: 1, a: 0}
-    - _Ground_Colour: {r: 0.8602941, g: 0.8602941, b: 0.8602941, a: 0}
+    - _Ground_Colour: {r: 0.6132076, g: 0.06074226, b: 0.2906331, a: 0}
     - _Ground_Detail_Colour: {r: 1, g: 0, b: 0, a: 0}
     - _RimColor: {r: 0.2555147, g: 1, b: 0.9269017, a: 0}
     - _RimColor1: {r: 0.1614143, g: 0.1380298, b: 0.8161765, a: 0}
     - _Road_Colour: {r: 1, g: 1, b: 1, a: 0}
     - _RockColour: {r: 0.17560555, g: 0.18834269, b: 0.20588237, a: 0}
-    - _Rock_Colour: {r: 0.056228366, g: 0.05482265, b: 0.09558821, a: 1}
+    - _Rock_Colour: {r: 0.36691844, g: 0.11414204, b: 0.4245283, a: 1}
     - _Rock_Colour_Primary: {r: 0.17766005, g: 0.24931695, b: 0.3897059, a: 0}
     - _Rock_Colour_Secondary: {r: 1, g: 0.16911763, b: 0.16911763, a: 0}
+  m_BuildTextureStacks: []

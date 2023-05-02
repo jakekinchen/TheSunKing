@@ -9,9 +9,7 @@ public class GameSetUp : MonoBehaviour {
     public CelestialBody startBody;
 
     public GameObject spawnPoint;
-    public GameObject crystal;
 
-	public GameObject crystalBeacon;
     
     public string planetName = "Humble Abode";
     public float delayInSeconds = 1f;
@@ -77,36 +75,7 @@ public class GameSetUp : MonoBehaviour {
     player.transform.rotation = Quaternion.FromToRotation(Vector3.up, pointAbovePlanet - startBody.transform.position);
 
 
-    // Transform crystal to a random position near the player on the surface of the planet
-    float distanceFromPlayer = 5f;
-    Vector3 randomDirection = Random.onUnitSphere;
-    Vector3 crystalPosition = player.transform.position + randomDirection * distanceFromPlayer;
-    RaycastHit hit;
 
-    // Start raycast from above the terrain
-    Vector3 raycastOrigin = crystalPosition + Vector3.up * startBody.radius;
-    Vector3 raycastDirection = Vector3.down;
-
-    int terrainLayerMask = LayerMask.GetMask("Terrain");
-    if (Physics.Raycast(raycastOrigin, raycastDirection, out hit, startBody.radius * 2f, terrainLayerMask))
-    {
-        crystal.transform.position = hit.point;
-    }
-    else
-    {
-        Debug.LogWarning("Raycast did not hit the terrain.");
-    }
-
-	//Move crystal beacon to crystal position
-	if (crystalBeacon != null){
-	crystalBeacon.transform.position = crystal.transform.position;
-	//rotate crystal beacon upward to point away from planet
-	crystalBeacon.transform.rotation = Quaternion.FromToRotation(Vector3.up, pointAbovePlanet - startBody.transform.position);
-	
-	}
-    // Set up crystal gravity
-    crystal.GetComponent<CrystalController>().celestialBody = startBody;
-    crystal.GetComponent<CrystalController>().rb.velocity = startBody.initialVelocity;
 
     // Set up player and ship
     player.SetVelocity(startBody.initialVelocity);

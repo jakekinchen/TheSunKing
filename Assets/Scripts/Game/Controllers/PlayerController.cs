@@ -18,6 +18,10 @@ public class PlayerController : GravityObject
 
     public bool isFlying = false;
     public bool isWalking = false;
+    public bool isDescending = false;
+    private bool grounded = false;
+
+
 
     [Header("Energy settings")]
     public float energyDrainRate = -0.005f;
@@ -102,9 +106,11 @@ public class PlayerController : GravityObject
         cameraLocalPos = cam.transform.localPosition;
         spaceship = FindObjectOfType<Ship>();
         InitRigidbody();
+        
 
         animator = GetComponentInChildren<Animator>();
         inputSettings.Begin();
+
     }
 
     void InitRigidbody()
@@ -139,27 +145,44 @@ public class PlayerController : GravityObject
         }
 
         // Movement
-        bool isGrounded = IsGrounded();
+        // Movement
+    bool isGrounded = IsGrounded();
+    grounded = isGrounded;
         Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         bool running = Input.GetKey(KeyCode.LeftShift);
         targetVelocity = transform.TransformDirection(input.normalized) * ((running) ? runSpeed : walkSpeed);
+
+            if (input != Vector3.zero)
+    {
+        Quaternion targetRotation = Quaternion.LookRotation(targetVelocity, transform.up);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1 * Time.deltaTime);
+    }
+    
         smoothVelocity = Vector3.SmoothDamp(smoothVelocity, targetVelocity, ref smoothVRef, (isGrounded) ? vSmoothTime : airSmoothTime);
 
 
-        // Flying mode
-        if (Input.GetKey(KeyCode.Space) && energy > 3)
-        {
-            energy -= 0.1f;
-            rb.AddForce(transform.up * flyForce * 0.07f, ForceMode.VelocityChange);
-            Debug.Log("Flying");
-            isFlying = true;
-        }
-        else
-        {
-            // Apply small downward force to prevent player from bouncing when going down slopes
-            rb.AddForce(-transform.up * stickToGroundForce * 0.2f, ForceMode.VelocityChange);
-            isFlying = false;
-        }
+         // Flying mode
+if (Input.GetKey(KeyCode.Space) && energy > 3)
+{
+    energy -= 0.1f;
+    rb.AddForce(transform.up * flyForce * 0.07f, ForceMode.VelocityChange);
+    Debug.Log("Flying");
+    isFlying = true;
+}
+else
+{
+    isFlying = false;
+    // Apply small downward force to prevent player from bouncing when going down slopes
+    rb.AddForce(-transform.up * stickToGroundForce * 0.2f, ForceMode.VelocityChange);
+}
+
+if (!isFlying && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)))
+{
+    // Move the player forward
+    rb.AddForce(transform.forward * flyForce * 0.02f, ForceMode.VelocityChange);
+}
+
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -190,36 +213,6 @@ public class PlayerController : GravityObject
         }
     }
 
-
-    // // Add this method inside the class
-    // public void SwitchPuzzleMode()
-    // {
-    //     isInPuzzleMode = !isInPuzzleMode;
-
-    //     // Enable/Disable the appropriate UI and controls
-    //     // You'll need to implement these methods in the UIController script
-    //     if (isInPuzzleMode)
-    //     {
-
-    //     // Show the 2D puzzle UI
-    //     // UIController.ShowPuzzleUI();
-
-    //     // Enable Puzzle1Camera and disable the main player camera
-    //     puzzle1Camera.enabled = true;
-    //     cam.enabled = false;
-    //     }
-    //     else
-    //     {
-    //     // Hide the 2D puzzle UI
-    //     // UIController.HidePuzzleUI();
-
-    //     // Disable Puzzle1Camera and enable the main player camera
-    //     puzzle1Camera.enabled = false;
-    //     cam.enabled = true;
-    //     }
-    // }
-
-
     private void UpdateHasCrystal(bool value)
     {
         hasCrystal = value;
@@ -239,69 +232,82 @@ public class PlayerController : GravityObject
     }
 
 
-    void Update()
+void Update()
+{
+    if (gameController)
     {
-        if (isFlying && energy > 3 //&& Input.GetAxisRaw("Vertical") != 0 //|| isFlying && Input.GetAxisRaw("Horizontal") != 0
-        )
+        if (!gameController.gameActive)
         {
-            animator.SetBool("isFlying", true);
-            animator.SetBool("isWalking", false);
+            HandleMovement();
         }
-        else if (!isFlying && Input.GetAxisRaw("Vertical") != 0 || !isFlying && Input.GetAxisRaw("Horizontal") != 0)
-        {
-            animator.SetBool("isFlying", false);
-            animator.SetBool("isWalking", true);
-        }
-        else
-        {
-            animator.SetBool("isWalking", false);
-            animator.SetBool("isFlying", false);
-        }
-
-
-
-        //if (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0)
-        //{
-        //    Debug.Log("walking!");
-        //    //animator.Play("walking");
-        //    //animator.SetTrigger("isWalking");
-        //    if (isFlying)
-        //    {
-        //        animator.SetBool("isFlying", true);
-        //    }
-        //    else
-        //    {
-        //        animator.SetBool("isWalking", true);
-        //    }
-        //}
-        //else
-        //{
-        //    animator.SetBool("isWalking", false);
-        //    animator.SetBool("isFlying", false);
-        //}
-        if (gameController)
-        {
-            if (!gameController.gameActive)
-            {
-                HandleMovement();
-            }
-            else
-            {
-
-            }
-        }
-
-        if (sun)
-        {
-
-
-            UpdateEnergy();
-        }
-
-
-
     }
 
+    if (sun)
+    {
+        UpdateEnergy();
+    }
+
+    isDescending = !grounded && !isFlying && downVelocity > 0;
+}
+
+// Replace your FixedUpdate() method with this one:
+void FixedUpdate()
+{
+    CelestialBody[] bodies = NBodySimulation.Bodies;
+    Vector3 gravityOfNearestBody = Vector3.zero;
+    float nearestSurfaceDst = float.MaxValue;
+
+    // Gravity
+    foreach (CelestialBody body in bodies)
+    {
+        float sqrDst = (body.Position - rb.position).sqrMagnitude;
+        Vector3 forceDir = (body.Position - rb.position).normalized;
+        Vector3 acceleration = forceDir * Universe.gravitationalConstant * body.mass / sqrDst;
+        rb.AddForce(acceleration, ForceMode.Acceleration);
+
+        float dstToSurface = Mathf.Sqrt(sqrDst) - body.radius;
+
+        // Find body with strongest gravitational pull 
+        if (dstToSurface < nearestSurfaceDst)
+        {
+            nearestSurfaceDst = dstToSurface;
+            gravityOfNearestBody = acceleration;
+            referenceBody = body;
+        }
+    }
+
+    // Rotate to align with gravity up
+    Vector3 gravityUp = -gravityOfNearestBody.normalized;
+    rb.rotation = Quaternion.FromToRotation(transform.up, gravityUp) * rb.rotation;
+
+    // Move
+    rb.MovePosition(rb.position + smoothVelocity * Time.fixedDeltaTime);
+
+    CalculateUpDownVelocity();
+
+// Handling animations
+    if (isFlying && energy > 3)
+    {
+        animator.SetBool("isFlying", true);
+        animator.SetBool("isWalking", false);
+    }
+    else if (isDescending)
+    {
+        animator.SetBool("isFlying", true);
+        animator.SetBool("isWalking", false);
+    }
+    else if (!isFlying && (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0))
+    {
+        animator.SetBool("isFlying", false);
+        animator.SetBool("isWalking", true);
+    }
+    else
+    {
+        animator.SetBool("isFlying", false);
+        animator.SetBool("isWalking", false);
+    }      
+
+}
 
 
     bool IsGrounded()
@@ -309,7 +315,7 @@ public class PlayerController : GravityObject
         // Sphere must not overlay terrain at origin otherwise no collision will be detected
         // so rayRadius should not be larger than controller's capsule collider radius
         const float rayRadius = .3f;
-        const float groundedRayDst = .2f;
+        const float groundedRayDst = .3f;
         bool grounded = false;
 
         if (referenceBody)
@@ -379,45 +385,6 @@ public class PlayerController : GravityObject
         }
     }
 
-
-
-
-    void FixedUpdate()
-    {
-        CelestialBody[] bodies = NBodySimulation.Bodies;
-        Vector3 gravityOfNearestBody = Vector3.zero;
-        float nearestSurfaceDst = float.MaxValue;
-
-
-        // Gravity
-        foreach (CelestialBody body in bodies)
-        {
-            float sqrDst = (body.Position - rb.position).sqrMagnitude;
-            Vector3 forceDir = (body.Position - rb.position).normalized;
-            Vector3 acceleration = forceDir * Universe.gravitationalConstant * body.mass / sqrDst;
-            rb.AddForce(acceleration, ForceMode.Acceleration);
-
-            float dstToSurface = Mathf.Sqrt(sqrDst) - body.radius;
-
-            // Find body with strongest gravitational pull 
-            if (dstToSurface < nearestSurfaceDst)
-            {
-                nearestSurfaceDst = dstToSurface;
-                gravityOfNearestBody = acceleration;
-                referenceBody = body;
-            }
-        }
-
-        // Rotate to align with gravity up
-        Vector3 gravityUp = -gravityOfNearestBody.normalized;
-        rb.rotation = Quaternion.FromToRotation(transform.up, gravityUp) * rb.rotation;
-
-        // Move
-        rb.MovePosition(rb.position + smoothVelocity * Time.fixedDeltaTime);
-
-        //CalculateUpDownVelocity();
-        CalculateUpDownVelocity();
-    }
 
     void HandleEditorInput()
     {

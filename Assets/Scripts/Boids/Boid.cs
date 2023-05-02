@@ -164,7 +164,7 @@ cachedTransform.rotation = Quaternion.Slerp(cachedTransform.rotation, targetRota
     bool IsHeadingForCollision () {
         RaycastHit hit;
         if (Physics.SphereCast (position, settings.boundsRadius, forward, out hit, settings.collisionAvoidDst, settings.obstacleMask)) {
-            Debug.Log("Collision Detected");
+           
             return true;
         } else { }
         return false;

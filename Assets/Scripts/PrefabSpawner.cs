@@ -98,9 +98,12 @@ public class PrefabSpawner : MonoBehaviour
                 int attempt = 0;
                 while (attempt < maxAttempts)
                 {
-                    if (!Physics.CheckSphere(spawnPosition, settings.prefab.transform.localScale.x * settings.scaleFactor / 2f, layerMask))
+                    if ( //!Physics.CheckSphere(spawnPosition, settings.prefab.transform.localScale.x * settings.scaleFactor / 2f, layerMask)
+                     attempt<10  
+                      )
                     {
                         GameObject spawnedPrefab = Instantiate(settings.prefab, spawnPosition, spawnRotation, settings.parentFolder.transform);
+                        spawnedPrefab.name = settings.prefab.name+"_"+i;
                         spawnedPrefab.transform.localScale = Vector3.one * settings.scaleFactor;
                         break;
                     }
@@ -109,8 +112,14 @@ public class PrefabSpawner : MonoBehaviour
                         randomIndex = Random.Range(0, vertices.Length);
                         spawnPosition = celestialBodyTransform.TransformPoint(vertices[randomIndex]) + celestialBodyTransform.TransformDirection(vertices[randomIndex]) * settings.distanceFromSurface;
                         spawnRotation = Quaternion.FromToRotation(Vector3.up, celestialBodyTransform.TransformDirection(vertices[randomIndex]));
+                        Debug.DrawRay(spawnPosition, Vector3.up * 100f, Color.red, 2f);
+                        Debug.Log("Prefab " + settings.prefab.name + " could not be spawned at " + spawnPosition + " because it would overlap with another object. Trying again...");
                         attempt++;
                     }
+                }
+                if (attempt == maxAttempts)
+                {
+                    Debug.LogWarning("Could not spawn prefab " + settings.prefab.name + " after " + maxAttempts + " attempts.");
                 }
 
             }
