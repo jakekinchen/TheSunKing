@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Boid : MonoBehaviour {
 
+    public bool useOptimizedAvoidanceDetection = false;
+
+    public GameObject planetObject;
     public Transform planet;
+    
 
     BoidSettings settings;
 
@@ -32,9 +36,38 @@ public class Boid : MonoBehaviour {
     Transform target;
 
     void Awake () {
+        planetObject = GameObject.Find("Body Simulation/Humble Abode");
+        planet = planetObject.transform;
         material = transform.GetComponentInChildren<MeshRenderer> ().material;
         cachedTransform = transform;
     }
+
+    public void SetPlanet(Transform planetTransform)
+{
+    planet = planetTransform;
+}
+Vector3 OptimizedAvoidanceRays()
+{
+    Vector3[] rayDirections = BoidHelper.directions;
+
+    LayerMask bodyLayerMask = LayerMask.GetMask("Body");
+
+    for (int i = 0; i < rayDirections.Length; i++)
+    {
+        Vector3 dir = cachedTransform.TransformDirection(rayDirections[i]);
+        Ray ray = new Ray(position, dir);
+
+         // Add the following lines for debug visualization
+        Debug.DrawRay(ray.origin, ray.direction * settings.collisionAvoidDst, Color.red, 0.1f);
+
+        if (!Physics.SphereCast(ray, settings.boundsRadius, settings.collisionAvoidDst, bodyLayerMask))
+        {
+            return dir;
+        }
+    }
+
+    return forward;
+}
 
     public void Initialize (BoidSettings settings, Transform target) {
         this.target = target;
@@ -45,8 +78,6 @@ public class Boid : MonoBehaviour {
 
         float startSpeed = (settings.minSpeed + settings.maxSpeed) / 2;
         velocity = transform.forward * startSpeed;
-
-         Debug.Log("Planet: " + planet);
     }
 
     public void SetColour (Color col) {
@@ -82,11 +113,20 @@ public class Boid : MonoBehaviour {
             acceleration += seperationForce;
         }
 
-        if (IsHeadingForCollision ()) {
-            Vector3 collisionAvoidDir = ObstacleRays ();
-            Vector3 collisionAvoidForce = SteerTowards (collisionAvoidDir) * settings.avoidCollisionWeight;
-            acceleration += collisionAvoidForce;
+        if (IsHeadingForCollision())
+    {
+        Vector3 collisionAvoidDir;
+        if (useOptimizedAvoidanceDetection)
+        {
+            collisionAvoidDir = OptimizedAvoidanceRays();
         }
+        else
+        {
+            collisionAvoidDir = ObstacleRays();
+        }
+        Vector3 collisionAvoidForce = SteerTowards(collisionAvoidDir) * settings.avoidCollisionWeight;
+        acceleration += collisionAvoidForce;
+    }
 
         if (planet != null)
         {
@@ -119,6 +159,7 @@ public class Boid : MonoBehaviour {
     bool IsHeadingForCollision () {
         RaycastHit hit;
         if (Physics.SphereCast (position, settings.boundsRadius, forward, out hit, settings.collisionAvoidDst, settings.obstacleMask)) {
+            Debug.Log("Collision Detected");
             return true;
         } else { }
         return false;

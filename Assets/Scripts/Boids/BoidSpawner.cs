@@ -12,15 +12,31 @@ public class BoidSpawner : MonoBehaviour {
     public Color colour;
     public GizmoType showSpawnRegion;
 
+    public bool spawnInOcean = false;
+    public float oceanHeightMin = 0f;
+    public float oceanHeightMax = 200f;
+
     void Awake () {
         for (int i = 0; i < spawnCount; i++) {
-            Vector3 pos = transform.position + Random.insideUnitSphere * spawnRadius;
-            Boid boid = Instantiate(prefab, transform); // Set the parent transform during instantiation
-            boid.transform.position = pos;
-            boid.transform.forward = Random.insideUnitSphere;
+            Vector3 randomPos = Random.insideUnitSphere * spawnRadius;
+
+            if (spawnInOcean) {
+                randomPos.y = Mathf.Clamp(randomPos.y, oceanHeightMin, oceanHeightMax);
+            }
+
+            Vector3 pos = transform.position + randomPos;
+            Boid boid = Instantiate(prefab, pos, Quaternion.identity, transform);
+
+            Vector3 toPlanetCenter = (boid.planet.position - pos).normalized;
+            Vector3 boidForward = Random.onUnitSphere;
+            Vector3 boidUp = Vector3.Cross(boidForward, toPlanetCenter).normalized;
+            boidForward = Vector3.Cross(toPlanetCenter, boidUp).normalized;
+            boid.transform.rotation = Quaternion.LookRotation(boidForward, toPlanetCenter);
+
 
             boid.SetColour(colour);
-            boid.planet = transform;
+            boid.SetPlanet(boid.planet.transform);
+            //Debug.Log("Planet: " + boid.planet);
         }
     }
 

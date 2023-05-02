@@ -77,6 +77,9 @@ public class PrefabSpawner : MonoBehaviour
     {
         float oceanRadius = celestialBodyGenerator.GetOceanRadius();
 
+        int layerMask = LayerMask.GetMask("Body");
+        int maxAttempts = 10;
+
         for (int i = 0; i < settings.numberOfInstances; i++)
         {
             int randomIndex = Random.Range(0, vertices.Length);
@@ -92,8 +95,23 @@ public class PrefabSpawner : MonoBehaviour
 
             if (spawnOnLand || spawnOnOcean || spawnOnCustomRange)
             {
-                GameObject spawnedPrefab = Instantiate(settings.prefab, spawnPosition, spawnRotation, settings.parentFolder.transform);
-                spawnedPrefab.transform.localScale = Vector3.one * settings.scaleFactor;
+                int attempt = 0;
+                while (attempt < maxAttempts)
+                {
+                    if (!Physics.CheckSphere(spawnPosition, settings.prefab.transform.localScale.x * settings.scaleFactor / 2f, layerMask))
+                    {
+                        GameObject spawnedPrefab = Instantiate(settings.prefab, spawnPosition, spawnRotation, settings.parentFolder.transform);
+                        spawnedPrefab.transform.localScale = Vector3.one * settings.scaleFactor;
+                        break;
+                    }
+                    else
+                    {
+                        randomIndex = Random.Range(0, vertices.Length);
+                        spawnPosition = celestialBodyTransform.TransformPoint(vertices[randomIndex]) + celestialBodyTransform.TransformDirection(vertices[randomIndex]) * settings.distanceFromSurface;
+                        spawnRotation = Quaternion.FromToRotation(Vector3.up, celestialBodyTransform.TransformDirection(vertices[randomIndex]));
+                        attempt++;
+                    }
+                }
 
             }
         }
