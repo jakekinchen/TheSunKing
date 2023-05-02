@@ -12,9 +12,9 @@ public class SolarSystemSpawnerEditor : Editor
 
         if (GUILayout.Button("Generate Humble Abode Terrain in Edit Mode"))
         {
-            spawner.editModeGeneration = true;
+            spawner.uncheckOnlyOnRegeneration = true;
             spawner.Spawn(0);
-            spawner.editModeGeneration = false;
+            spawner.uncheckOnlyOnRegeneration = false;
         }
     }
 }

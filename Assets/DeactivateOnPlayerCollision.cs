@@ -4,6 +4,7 @@ using UnityEngine;
 public class DeactivateOnPlayerCollision : MonoBehaviour
 {
     [SerializeField] public ParticleSystem crystalParticleSystem;
+    [SerializeField] public ParticleSystem crystalParticleSystem2;
     [SerializeField] private bool useAnimation = true;
     [SerializeField] private float popAnimationDuration = 1f;
 
@@ -83,7 +84,11 @@ public class DeactivateOnPlayerCollision : MonoBehaviour
         forceOverLifetime.y = new ParticleSystem.MinMaxCurve(0.1f, 1f);
 
         // Play the particle system
+        crystalParticleSystem2.Play();
+        
         crystalParticleSystem.Play();
+
+        
 
         // Wait for the duration and deactivate the game object
         yield return new WaitForSeconds(popAnimationDuration);

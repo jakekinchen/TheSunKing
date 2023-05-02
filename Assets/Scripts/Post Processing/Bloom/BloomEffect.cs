@@ -1,8 +1,4 @@
-﻿// Based on bloom effect by Keijiro Takahashi (see accompanying readme and license for details)
-// The original can be found here: https://github.com/keijiro/KinoBloom/releases
-// Minor modifications made
-
-using UnityEngine;
+﻿using UnityEngine;
 
 [ExecuteInEditMode, ImageEffectAllowedInSceneView]
 [CreateAssetMenu (menuName = "PostProcessing/Bloom")]

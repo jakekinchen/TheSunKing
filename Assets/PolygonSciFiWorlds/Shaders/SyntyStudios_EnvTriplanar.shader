@@ -6,6 +6,7 @@ Shader "SyntyStudios/EnvTriplanar"
 	{
 		_Main_Texture("Main_Texture", 2D) = "gray" {}
 		_Main_Normals("Main_Normals", 2D) = "bump" {}
+		_EmissionColor("Emission Color", Color) = (1, 1, 1, 1)
 		[HideInInspector]_Side_Triplanar("Side_Triplanar", 2D) = "black" {}
 		[HideInInspector]_White_Triplanar("White_Triplanar", 2D) = "white" {}
 		_Rock_Mask_Triplanar("Rock_Mask_Triplanar", 2D) = "black" {}
@@ -55,6 +56,7 @@ Shader "SyntyStudios/EnvTriplanar"
 
 		uniform sampler2D _Main_Normals;
 		uniform float4 _Main_Normals_ST;
+		uniform float4 _EmissionColor;
 		uniform sampler2D _TextureSample0;
 		uniform float4 _TextureSample0_ST;
 		uniform sampler2D _Normal_Triplanar;
@@ -196,6 +198,7 @@ Shader "SyntyStudios/EnvTriplanar"
 			o.Albedo = lerpResult26.rgb;
 			float2 uv_Emissive_01 = i.uv_texcoord * _Emissive_01_ST.xy + _Emissive_01_ST.zw;
 			o.Emission = tex2D( _Emissive_01, uv_Emissive_01 ).rgb;
+			o.Emission = _EmissionColor.rgb * tex2D(_Emissive_01, uv_Emissive_01).r;
 			o.Metallic = _Spec_Metallic;
 			o.Smoothness = _Spec_Smoothness;
 			o.Alpha = 1;

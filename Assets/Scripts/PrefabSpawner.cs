@@ -5,6 +5,9 @@ using UnityEngine;
 public class PrefabSettings
 {
     public GameObject prefab;
+    public bool usePoissonDiskSampling;
+    public float poissonDiskRadius = 5.0f;
+    public int poissonDiskMaxSamples = 30;
     public int numberOfInstances;
     public float distanceFromSurface;
     public float scaleFactor = 1.0f;
@@ -26,6 +29,8 @@ public class PrefabSpawner : MonoBehaviour
     private Mesh terrainMesh;
     private Vector3[] vertices;
     private Transform celestialBodyTransform;
+
+    public int maxTotalAttempts = 10000;
 
     private void Awake()
     {
@@ -78,8 +83,17 @@ public class PrefabSpawner : MonoBehaviour
         float oceanRadius = celestialBodyGenerator.GetOceanRadius();
 
         int layerMask = LayerMask.GetMask("Body");
+        int totalAttempts = 0; 
         int maxAttempts = 10;
-
+        
+         List<Vector3> spawnPositions;
+        
+        if (settings.usePoissonDiskSampling)
+        {
+            spawnPositions = GeneratePoissonDiskSamplingPositions(settings);
+        }
+        else
+        {
         for (int i = 0; i < settings.numberOfInstances; i++)
         {
             int randomIndex = Random.Range(0, vertices.Length);
@@ -96,10 +110,10 @@ public class PrefabSpawner : MonoBehaviour
             if (spawnOnLand || spawnOnOcean || spawnOnCustomRange)
             {
                 int attempt = 0;
-                while (attempt < maxAttempts)
+                while (attempt < maxAttempts && totalAttempts < maxTotalAttempts)
                 {
-                    if ( //!Physics.CheckSphere(spawnPosition, settings.prefab.transform.localScale.x * settings.scaleFactor / 2f, layerMask)
-                     attempt<10  
+                    if ( !Physics.CheckSphere(spawnPosition, settings.prefab.transform.localScale.x * settings.scaleFactor / 2f, layerMask)
+                    
                       )
                     {
                         GameObject spawnedPrefab = Instantiate(settings.prefab, spawnPosition, spawnRotation, settings.parentFolder.transform);
@@ -112,19 +126,27 @@ public class PrefabSpawner : MonoBehaviour
                         randomIndex = Random.Range(0, vertices.Length);
                         spawnPosition = celestialBodyTransform.TransformPoint(vertices[randomIndex]) + celestialBodyTransform.TransformDirection(vertices[randomIndex]) * settings.distanceFromSurface;
                         spawnRotation = Quaternion.FromToRotation(Vector3.up, celestialBodyTransform.TransformDirection(vertices[randomIndex]));
-                        Debug.DrawRay(spawnPosition, Vector3.up * 100f, Color.red, 2f);
-                        Debug.Log("Prefab " + settings.prefab.name + " could not be spawned at " + spawnPosition + " because it would overlap with another object. Trying again...");
                         attempt++;
+                        totalAttempts++;
                     }
                 }
-                if (attempt == maxAttempts)
+                if (totalAttempts >= maxTotalAttempts)
                 {
-                    Debug.LogWarning("Could not spawn prefab " + settings.prefab.name + " after " + maxAttempts + " attempts.");
+                    Debug.LogWarning("Could not spawn all prefabs after reaching the maximum total attempts.");
+                    break; // Exit the loop if the fail-safe limit is reached
                 }
 
-            }
+            } 
+        }
         }
     }
+
+private List<Vector3> GeneratePoissonDiskSamplingPositions(PrefabSettings settings)
+{
+    Bounds bounds = terrainMesh.bounds;
+    List<Vector3> samplePoints = PoissonDiskSampling.GeneratePoints(settings.poissonDiskRadius, new Vector2(bounds.size.x, bounds.size.z), settings.minHeight, settings.maxHeight, settings.poissonDiskMaxSamples);
+    return samplePoints;
+}
 
     public void DeletePrefabs(PrefabSettings settings)
     {

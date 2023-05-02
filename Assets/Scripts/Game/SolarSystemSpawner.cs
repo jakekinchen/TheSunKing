@@ -6,7 +6,7 @@ public class SolarSystemSpawner : MonoBehaviour {
 
 	public CelestialBodyGenerator.ResolutionSettings resolutionSettings;
 
-	public bool editModeGeneration = false;
+	public bool uncheckOnlyOnRegeneration = false;
 
 	void Awake () {
 		Spawn (0);
@@ -24,7 +24,7 @@ public class SolarSystemSpawner : MonoBehaviour {
 				continue;
 			}
 
-			if (editModeGeneration && body.name != "Humble Abode")
+			if (uncheckOnlyOnRegeneration && body.name != "Humble Abode")
         {
             continue;
         }
