@@ -22,8 +22,10 @@ public class CelestialBody : GravityObject {
     public float oceanRadius = 200f;
     public float atmosphereRadius = 250f;
     public float gravityStrength = 1f; // Strength of the gravity force pulling the player towards the celestial body
+    public PlayerController player;
     public Transform playerTransform;
     public Rigidbody playerRigidbody; // Reference to the player's Rigidbody component
+    
 
     private void FixedUpdate()
     {
@@ -62,7 +64,12 @@ public class CelestialBody : GravityObject {
     }
 
     void Awake () {
-
+        if (playerTransform && playerRigidbody == null)
+        {
+            player = FindObjectOfType<PlayerController>();
+            playerRigidbody = player.GetComponent<Rigidbody>();
+            playerTransform = player.transform;
+        }
         rb = GetComponent<Rigidbody> ();
         velocity = initialVelocity;
         RecalculateMass ();
