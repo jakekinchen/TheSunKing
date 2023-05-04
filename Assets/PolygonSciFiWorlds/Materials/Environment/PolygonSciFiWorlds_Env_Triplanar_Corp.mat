@@ -8,11 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PolygonSciFiWorlds_Env_Triplanar_Corp
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 45, guid: 0000000000000000f000000000000000, type: 0}
   m_ValidKeywords:
   - _EMISSION
+  - _NORMALMAP
   m_InvalidKeywords: []
-  m_LightmapFlags: 0
+  m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -54,7 +55,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 63d3b2d11a818734eb3a55461e2c2f61, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -74,9 +75,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Texture: {fileID: 2800000, guid: 03db659f8a637b744943d87d1a6d7c5e, type: 3}
+        m_Scale: {x: 1.44, y: 1.51}
+        m_Offset: {x: 0.98, y: 3}
     - _Emissive:
         m_Texture: {fileID: 2800000, guid: 7a170cdb7cc88024cb628cfcdbb6705c, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -98,9 +99,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Texture: {fileID: 2800000, guid: 49e99072ab056114c928d8ffac4ea838, type: 3}
+        m_Scale: {x: 1.44, y: 1.51}
+        m_Offset: {x: 0.98, y: 3}
     - _Main_Normals:
         m_Texture: {fileID: 2800000, guid: 2ee8591f903c8aa4382ef533fa1a51af, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -181,6 +182,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Plant_Mask:
+        m_Texture: {fileID: 2800000, guid: cba86c820f0168c45a19848266b06649, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Rock_Mask_Triplanar:
         m_Texture: {fileID: 2800000, guid: 2917dd9cb57f27a43a63a8e93800d545, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -191,6 +196,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _Side_Triplanar:
         m_Texture: {fileID: 2800000, guid: 358612fdf9c718f4fa6f01d88164b407, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainHolesTexture:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture:
@@ -214,11 +227,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureSample0:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: cba86c820f0168c45a19848266b06649, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureSample1:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureSample2:
+        m_Texture: {fileID: 2800000, guid: a6cf282deec624741b185ff6bfae5cc6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TopTexture2:
@@ -232,6 +249,10 @@ Material:
     - _Top_Triplanar:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Tree_NoiseTexture1:
+        m_Texture: {fileID: 2800000, guid: 661313bdb77fa944882bb60df3b5cfb8, type: 3}
+        m_Scale: {x: 1.57, y: 1}
         m_Offset: {x: 0, y: 0}
     - _White_Triplanar:
         m_Texture: {fileID: 2800000, guid: 358612fdf9c718f4fa6f01d88164b407, type: 3}
@@ -247,19 +268,31 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Big_WindAmount: 1
+    - _BlendOp: 0
     - _BumpScale: 1
+    - _CameraFadingEnabled: 0
+    - _CameraFarFadeDistance: 2
+    - _CameraNearFadeDistance: 1
     - _Cliff_Defail_Power: 1
     - _Cliff_Detail_Power: 0.299
     - _Cliff_Detail_Scale: 0.0063
+    - _Cull: 2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DetailTilingLarge: 0.0202
     - _DetailTilingRocks: 0.0234
     - _DetailTilingSmall: 0.043
     - _DirtBreakup: 0.0238
+    - _DistortionBlend: 0.5
+    - _DistortionEnabled: 0
+    - _DistortionStrength: 1
+    - _DistortionStrengthScaled: 0
     - _DstBlend: 0
+    - _EmissionEnabled: 0
     - _FallOff: 100
     - _FallOff1: 100
+    - _FlipbookMode: 0
     - _Float4: 0.296
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -269,6 +302,7 @@ Material:
     - _Ground_Falloff: 65
     - _Ground_Noise_Scale: 0
     - _Ground_Pebble_Scale: 0.0361
+    - _LightingEnabled: 1
     - _MEtallic: 0.421
     - _Metallic: 0.576
     - _Mode: 0
@@ -276,8 +310,13 @@ Material:
     - _Parallax: 0.02
     - _RimPower: 2.83
     - _RimPower1: 3.01
+    - _Small_Wave: 0
+    - _Small_WindSpeed: 0
     - _SmoothnessTextureChannel: 0
     - _Snow: 0
+    - _SoftParticlesEnabled: 0
+    - _SoftParticlesFarFadeDistance: 1
+    - _SoftParticlesNearFadeDistance: 0
     - _Spec_Metallic: 0.01
     - _Spec_Smoothness: 0.068
     - _SpecularHighlights: 1
@@ -295,16 +334,19 @@ Material:
     - _smoothness: 0.175
     - _translkucency: 0.443
     m_Colors:
+    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
     - _CliffColour: {r: 0, g: 0.110750526, b: 0.17647058, a: 0}
     - _Cliff_Colour: {r: 0.61764705, g: 0.20891005, b: 0.20891005, a: 0}
-    - _Color: {r: 1, g: 0.11792451, b: 0.11792451, a: 1}
+    - _Color: {r: 0.5552006, g: 0, b: 1, a: 1}
     - _Color2: {r: 0.38235295, g: 0.35319176, b: 0.33737025, a: 0}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissionColor: {r: 2.79544, g: 0.52688926, b: 1.2879515, a: 1}
     - _EmissiveColor: {r: 1, g: 1, b: 1, a: 0}
     - _EmissiveColor1: {r: 1, g: 1, b: 1, a: 0}
+    - _Emissive_Colour: {r: 0, g: 0, b: 0, a: 0}
     - _GroundColour: {r: 1, g: 1, b: 1, a: 0}
     - _Ground_Colour: {r: 0.6132076, g: 0.06074226, b: 0.2906331, a: 0}
     - _Ground_Detail_Colour: {r: 1, g: 0, b: 0, a: 0}
+    - _Plant_Colour: {r: 0.7169812, g: 0.063881956, b: 0.4571721, a: 1}
     - _RimColor: {r: 0.2555147, g: 1, b: 0.9269017, a: 0}
     - _RimColor1: {r: 0.1614143, g: 0.1380298, b: 0.8161765, a: 0}
     - _Road_Colour: {r: 1, g: 1, b: 1, a: 0}
@@ -312,4 +354,6 @@ Material:
     - _Rock_Colour: {r: 0.36691844, g: 0.11414204, b: 0.4245283, a: 1}
     - _Rock_Colour_Primary: {r: 0.17766005, g: 0.24931695, b: 0.3897059, a: 0}
     - _Rock_Colour_Secondary: {r: 1, g: 0.16911763, b: 0.16911763, a: 0}
+    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
+    - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
