@@ -2,13 +2,15 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: PolygonSciFiWorlds_Env_Triplanar_Exp
   m_Shader: {fileID: 4800000, guid: 8e3a7be9db42981418988bc59e1916cb, type: 3}
-  m_ShaderKeywords: 
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -103,7 +105,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Main_Texture:
-        m_Texture: {fileID: 2800000, guid: 43c3584d37e18654e82a230987f73d40, type: 3}
+        m_Texture: {fileID: 2800000, guid: cba86c820f0168c45a19848266b06649, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Mask:
@@ -242,6 +244,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _BumpScale: 1
     - _Cliff_Defail_Power: 1
@@ -275,7 +278,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _Snow: 0
     - _Spec_Metallic: 0.254
-    - _Spec_Smoothness: 0
+    - _Spec_Smoothness: 0.351
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _TransAmbient: 0.179
@@ -299,7 +302,7 @@ Material:
     - _EmissiveColor: {r: 1, g: 1, b: 1, a: 0}
     - _EmissiveColor1: {r: 1, g: 1, b: 1, a: 0}
     - _GroundColour: {r: 1, g: 1, b: 1, a: 0}
-    - _Ground_Colour: {r: 0.6392157, g: 0.0627451, b: 0.2901961, a: 1}
+    - _Ground_Colour: {r: 0.35340762, g: 0.06274509, b: 0.6392157, a: 1}
     - _Ground_Detail_Colour: {r: 0.09233382, g: 0.052335635, b: 0.16176468, a: 0}
     - _RimColor: {r: 0.2555147, g: 1, b: 0.9269017, a: 0}
     - _RimColor1: {r: 0.1614143, g: 0.1380298, b: 0.8161765, a: 0}
@@ -308,3 +311,4 @@ Material:
     - _Rock_Colour: {r: 0.11372549, g: 0.003921569, b: 0.13333334, a: 1}
     - _Rock_Colour_Primary: {r: 0.11490278, g: 0.0058390982, b: 0.13235295, a: 0}
     - _Rock_Colour_Secondary: {r: 0.11490278, g: 0.0058390982, b: 0.13235295, a: 0}
+  m_BuildTextureStacks: []
