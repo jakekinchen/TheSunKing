@@ -38,6 +38,7 @@ public class PlayerController : GravityObject
     public GameObject sun;
     public float energy;
     private Vignette _vignette;
+    [SerializeField] private EnergyLightController energyLightController;
 
 
     [Header("Environment Trigger settings")]
@@ -109,6 +110,8 @@ public class PlayerController : GravityObject
         inputSettings.Begin();
 
     }
+
+
 
     void InitRigidbody()
     {
@@ -261,6 +264,7 @@ void Update()
     if (sun)
     {
         UpdateEnergy();
+        energyLightController.UpdateEnergyLevel(energy);
     }
 
     isDescending = !grounded && !isFlying && downVelocity > 0;
