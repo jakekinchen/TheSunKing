@@ -58,7 +58,7 @@ Vector3 OptimizedAvoidanceRays()
         Ray ray = new Ray(position, dir);
 
          // Add the following lines for debug visualization
-        Debug.DrawRay(ray.origin, ray.direction * settings.collisionAvoidDst, Color.red, 0.1f);
+       // Debug.DrawRay(ray.origin, ray.direction * settings.collisionAvoidDst, Color.red, 0.1f);
 
         if (!Physics.SphereCast(ray, settings.boundsRadius, settings.collisionAvoidDst, bodyLayerMask))
         {
@@ -93,7 +93,7 @@ Vector3 OptimizedAvoidanceRays()
 
          Vector3 gravityDirection = (planet.position - position).normalized;      
          acceleration += gravityDirection * settings.gravityStrength;
-         Debug.DrawRay(position, gravityDirection, Color.red, 100f);
+        // Debug.DrawRay(position, gravityDirection, Color.red, 100f);
 
 
         if (target != null) {

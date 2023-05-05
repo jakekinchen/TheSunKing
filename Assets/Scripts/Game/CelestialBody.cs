@@ -37,6 +37,17 @@ public class CelestialBody : GravityObject {
         }
     }
 
+    public void PlayerEnteredOcean()
+    {
+        float playerDistance = Vector3.Distance(playerTransform.position, transform.position);
+        if (playerDistance < oceanRadius-1f)
+        {
+            Debug.Log("Player entered ocean");
+            Vector3 direction = (playerTransform.position - transform.position).normalized;
+            playerTransform.position = transform.position + direction * oceanRadius;
+        }
+    }
+
     public bool IsPlayerInsideAtmosphere()
     {
         float playerDistance = Vector3.Distance(playerTransform.position, transform.position);
@@ -46,8 +57,9 @@ public class CelestialBody : GravityObject {
     public void PlayerEnteredAtmosphere()
     {
         float playerDistance = Vector3.Distance(playerTransform.position, transform.position);
-        if (playerDistance < oceanRadius)
+        if (playerDistance < oceanRadius-1f)
         {
+            Debug.Log("Player entered ocean");
             Vector3 direction = (playerTransform.position - transform.position).normalized;
             playerTransform.position = transform.position + direction * oceanRadius;
         }

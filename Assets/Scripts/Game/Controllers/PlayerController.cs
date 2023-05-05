@@ -44,9 +44,6 @@ public class PlayerController : GravityObject
     public bool isSwimming = false;
     public bool isOutsideEarth = false;
 
-    public WaterTrigger waterTrigger;
-    public AtmosphereTrigger atmosphereTrigger;
-
     public CelestialBody celestialBody;
 
     public float flyForce = .01f;
@@ -160,34 +157,53 @@ public class PlayerController : GravityObject
     
         smoothVelocity = Vector3.SmoothDamp(smoothVelocity, targetVelocity, ref smoothVRef, (isGrounded) ? vSmoothTime : airSmoothTime);
 
+    if (isPlayerInOcean())
+    {
+        Debug.Log("Player is in ocean");
+        isSwimming = true;
+    }else {
+        Debug.Log("Player is not in ocean");
+        isSwimming = false;
+    }
 
-         // Flying mode
-if (Input.GetKey(KeyCode.Space) && energy > 3)
-{
-    energy -= 0.1f;
-    rb.AddForce(transform.up * flyForce * 0.07f, ForceMode.VelocityChange);
-    Debug.Log("Flying");
-    isFlying = true;
-}
-else
-{
-    isFlying = false;
-    // Apply small downward force to prevent player from bouncing when going down slopes
-    rb.AddForce(-transform.up * stickToGroundForce * 0.2f, ForceMode.VelocityChange);
-}
+            // Flying mode
+    if (Input.GetKey(KeyCode.Space) && energy > 3)
+    {
+        energy -= 0.1f;
+        rb.AddForce(transform.up * flyForce * 0.07f, ForceMode.VelocityChange);
+        Debug.Log("Flying");
+        isFlying = true;
+    }
+    else
+    {
+        isFlying = false;
+        // Apply small downward force to prevent player from bouncing when going down slopes
+        rb.AddForce(-transform.up * stickToGroundForce * 0.2f, ForceMode.VelocityChange);
+    }
 
-if (!isFlying && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)))
-{
-    // Move the player forward
-    rb.AddForce(transform.forward * flyForce * 0.02f, ForceMode.VelocityChange);
-}
+    if (!isFlying && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)))
+    {
+        // Move the player forward
+        rb.AddForce(transform.forward * flyForce * 0.02f, ForceMode.VelocityChange);
+    }
+    }
 
-
+    public bool isPlayerInOcean()
+    {
+        float playerDistance = Vector3.Distance(transform.position, celestialBody.transform.position);
+        if (playerDistance < 198f)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("WaterTrigger"))
+        if (other.gameObject.CompareTag("WaterTrigger"))
         {
             isSwimming = true;
             Debug.Log("Swimming");
