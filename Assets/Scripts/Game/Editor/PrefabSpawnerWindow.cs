@@ -4,6 +4,8 @@ using UnityEngine;
 public class PrefabSpawnerWindow : EditorWindow
 {
     private PrefabSpawner prefabSpawner;
+    private GameObject terrainObject;
+    private CelestialBodyGenerator celestialBodyGenerator;
     private Vector2 scrollPosition;
 
     [MenuItem("Window/Prefab Spawner")]
@@ -14,15 +16,15 @@ public class PrefabSpawnerWindow : EditorWindow
 
     private void OnGUI()
     {
-        GUILayout.Space(10);
+        
         prefabSpawner = (PrefabSpawner)EditorGUILayout.ObjectField("Prefab Spawner", prefabSpawner, typeof(PrefabSpawner), true);
-
+        
         if (prefabSpawner == null)
         {
             EditorGUILayout.HelpBox("Please assign a Prefab Spawner.", MessageType.Warning);
             return;
         }
-    GUILayout.Space(10);
+
         EditorGUI.BeginChangeCheck();
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
 
@@ -30,9 +32,6 @@ public class PrefabSpawnerWindow : EditorWindow
         GUILayout.Label("Individual Prefab Settings Actions:");
         for (int i = 0; i < prefabSpawner.prefabsSettings.Count; i++)
         {
-            GUILayout.Label($"Prefab {i + 1}: " + (prefabSpawner.prefabsSettings[i].prefab == null ? "(Prefab is null)" : prefabSpawner.prefabsSettings[i].prefab.name));
-
-
             prefabSpawner.prefabsSettings[i].prefab = (GameObject)EditorGUILayout.ObjectField("Prefab", prefabSpawner.prefabsSettings[i].prefab, typeof(GameObject), false);
             prefabSpawner.prefabsSettings[i].numberOfInstances = EditorGUILayout.IntField("Number of Instances", prefabSpawner.prefabsSettings[i].numberOfInstances);
             prefabSpawner.prefabsSettings[i].distanceFromSurface = EditorGUILayout.FloatField("Distance from Surface", prefabSpawner.prefabsSettings[i].distanceFromSurface);
@@ -71,6 +70,8 @@ public class PrefabSpawnerWindow : EditorWindow
             }
 
             GUILayout.BeginHorizontal();
+            //make button length 20
+
             if (GUILayout.Button("Generate"))
             {
                 prefabSpawner.GeneratePrefabs(prefabSpawner.prefabsSettings[i]);

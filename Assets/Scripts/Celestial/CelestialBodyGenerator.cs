@@ -9,6 +9,9 @@ public class CelestialBodyGenerator : MonoBehaviour {
 	public ResolutionSettings resolutionSettings;
 	public PreviewMode previewMode;
 
+	public GameObject editModeTerrainHolder;
+
+
 	public bool logTimers;
 
 	public CelestialBodySettings body;
@@ -57,6 +60,15 @@ public class CelestialBodyGenerator : MonoBehaviour {
 			//m.enabled = !m.enabled;
 		}
 	}
+
+	void GenerateCollisionMeshInEditMode() {
+    GenerateCollisionMesh(resolutionSettings.collider);
+    MeshCollider collider;
+    if (!editModeTerrainHolder.TryGetComponent<MeshCollider>(out collider)) {
+        collider = editModeTerrainHolder.AddComponent<MeshCollider>();
+    }
+    collider.sharedMesh = collisionMesh;
+}
 
 	// Handles creation of celestial body when entering game mode
 	// This differs from the edit-mode version in the following ways:
@@ -146,6 +158,7 @@ public class CelestialBodyGenerator : MonoBehaviour {
 
 				LogTimer (terrainMeshTimer, "Generate terrain mesh");
 				DrawEditModeMesh ();
+				GenerateCollisionMeshInEditMode();
 			}
 			// If only shading noise has changed, update it separately from shape to save time
 			else if (shadingNoiseSettingsUpdated) {
@@ -313,6 +326,7 @@ public class CelestialBodyGenerator : MonoBehaviour {
 
 	void DrawEditModeMesh () {
 		GameObject terrainHolder = GetOrCreateMeshObject ("Terrain Mesh", previewMesh, body.shading.terrainMaterial);
+		editModeTerrainHolder = GetOrCreateMeshObject("Terrain Mesh", previewMesh, body.shading.terrainMaterial);
 	}
 
 	// Gets child object with specified name.

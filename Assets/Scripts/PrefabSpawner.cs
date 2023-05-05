@@ -30,11 +30,12 @@ public class PrefabSpawner : MonoBehaviour
     private Vector3[] vertices;
     private Transform celestialBodyTransform;
 
-    public int maxTotalAttempts = 10000;
 
     private void Awake()
     {
-        //undoStack = new Stack<(PrefabSettings, GameObject)>(undoHistorySize);
+        MeshCollider terrainMeshCollider = terrainObject.GetComponent<MeshCollider>();
+        PoissonDiskSampling sampling = gameObject.AddComponent<PoissonDiskSampling>();
+        sampling.Initialize(terrainMeshCollider); // Fix this line
     }
 
     public void GeneratePrefabs(PrefabSettings prefabSettings)
@@ -42,10 +43,10 @@ public class PrefabSpawner : MonoBehaviour
         
         if (terrainObject == null || celestialBodyGenerator == null) return;
 
-        MeshFilter terrainMeshFilter = terrainObject.GetComponent<MeshFilter>();
-        if (terrainMeshFilter != null)
+        MeshCollider terrainMeshCollider = terrainObject.GetComponent<MeshCollider>();
+        if (terrainMeshCollider != null)
         {
-            terrainMesh = terrainMeshFilter.sharedMesh;
+            terrainMesh = terrainMeshCollider.sharedMesh;
             vertices = terrainMesh.vertices;
             celestialBodyTransform = terrainObject.transform.parent;
 
@@ -74,79 +75,95 @@ public class PrefabSpawner : MonoBehaviour
         }    
         else
        {
-        Debug.LogError("Terrain object does not have a MeshFilter component.");
+        Debug.LogError("Terrain object does not have a MeshCollider component.");
        }
     }
 
     private void SpawnPrefabs(PrefabSettings settings)
+{
+    float oceanRadius = celestialBodyGenerator.GetOceanRadius();
+    
+    int layerMask = LayerMask.GetMask("Body");
+    
+    List<Vector3> spawnPositions;
+    
+    if (settings.usePoissonDiskSampling)
     {
-        float oceanRadius = celestialBodyGenerator.GetOceanRadius();
-
-        int layerMask = LayerMask.GetMask("Body");
-        int totalAttempts = 0; 
-        int maxAttempts = 10;
-        
-         List<Vector3> spawnPositions;
-        
-        if (settings.usePoissonDiskSampling)
+        spawnPositions = GeneratePoissonDiskSamplingPositions(settings);
+        Debug.Log("Generated " + spawnPositions.Count + " spawn positions using Poisson Disk Sampling.");
+        foreach (Vector3 spawnPosition in spawnPositions)
         {
-            spawnPositions = GeneratePoissonDiskSamplingPositions(settings);
+            Debug.Log("Spawned " + settings.prefab.name + " at " + spawnPosition);
+            Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, celestialBodyTransform.TransformDirection(spawnPosition - celestialBodyTransform.position));
+            float terrainHeight = (spawnPosition - celestialBodyTransform.position).magnitude;
+            InstantiatePrefab(settings, spawnPosition, spawnRotation, layerMask);
         }
-        else
-        {
+    }
+    else
+    {
         for (int i = 0; i < settings.numberOfInstances; i++)
         {
             int randomIndex = Random.Range(0, vertices.Length);
             Vector3 spawnPosition = celestialBodyTransform.TransformPoint(vertices[randomIndex]) + celestialBodyTransform.TransformDirection(vertices[randomIndex]) * settings.distanceFromSurface;
             Quaternion spawnRotation = Quaternion.FromToRotation(Vector3.up, celestialBodyTransform.TransformDirection(vertices[randomIndex]));
-
-            Vector3 worldSpaceVertex = celestialBodyTransform.TransformPoint(vertices[randomIndex]);
-            float terrainHeight = (worldSpaceVertex - celestialBodyTransform.position).magnitude;
-
-            bool spawnOnLand = settings.spawnOnLand && terrainHeight > oceanRadius && terrainHeight <= oceanRadius + 50f;
-            bool spawnOnOcean = settings.spawnOnOcean && terrainHeight <= oceanRadius;
-            bool spawnOnCustomRange = settings.useCustomHeightRange && terrainHeight >= settings.minHeight && terrainHeight <= settings.maxHeight;
-
-            if (spawnOnLand || spawnOnOcean || spawnOnCustomRange)
-            {
-                int attempt = 0;
-                while (attempt < maxAttempts && totalAttempts < maxTotalAttempts)
-                {
-                    if ( !Physics.CheckSphere(spawnPosition, settings.prefab.transform.localScale.x * settings.scaleFactor / 2f, layerMask)
-                    
-                      )
-                    {
-                        GameObject spawnedPrefab = Instantiate(settings.prefab, spawnPosition, spawnRotation, settings.parentFolder.transform);
-                        spawnedPrefab.name = settings.prefab.name+"_"+i;
-                        spawnedPrefab.transform.localScale = Vector3.one * settings.scaleFactor;
-                        break;
-                    }
-                    else
-                    {
-                        randomIndex = Random.Range(0, vertices.Length);
-                        spawnPosition = celestialBodyTransform.TransformPoint(vertices[randomIndex]) + celestialBodyTransform.TransformDirection(vertices[randomIndex]) * settings.distanceFromSurface;
-                        spawnRotation = Quaternion.FromToRotation(Vector3.up, celestialBodyTransform.TransformDirection(vertices[randomIndex]));
-                        attempt++;
-                        totalAttempts++;
-                    }
-                }
-                if (totalAttempts >= maxTotalAttempts)
-                {
-                    Debug.LogWarning("Could not spawn all prefabs after reaching the maximum total attempts.");
-                    break; // Exit the loop if the fail-safe limit is reached
-                }
-
-            } 
-        }
+            InstantiatePrefab(settings, spawnPosition, spawnRotation, layerMask);
         }
     }
+}
+
+private void InstantiatePrefab(PrefabSettings settings, Vector3 spawnPosition, Quaternion spawnRotation, int layerMask)
+{
+    float rayHeight = 1000f; // Set a large enough value to ensure the ray starts above the terrain
+    Vector3 rayOrigin = new Vector3(spawnPosition.x, rayHeight, spawnPosition.z);
+    RaycastHit hit;
+
+    if (Physics.Raycast(rayOrigin, Vector3.down, out hit, Mathf.Infinity, layerMask) && !Physics.CheckSphere(hit.point, settings.prefab.transform.localScale.x * settings.scaleFactor / 2f, layerMask, QueryTriggerInteraction.Ignore))
+    {
+        GameObject spawnedPrefab = Instantiate(settings.prefab, hit.point + hit.normal * settings.distanceFromSurface, spawnRotation, settings.parentFolder.transform);
+        spawnedPrefab.name = settings.prefab.name + "_" + settings.parentFolder.transform.childCount;
+        spawnedPrefab.transform.localScale = Vector3.one * settings.scaleFactor;
+    }
+    else {
+        Debug.Log("Prefab " + settings.prefab.name + " could not be spawned at " + spawnPosition + " because it would overlap with another object or terrain was not detected.");
+        Debug.DrawRay(rayOrigin, Vector3.down * 1000f, Color.red, 1000f);
+    }
+}
 
 private List<Vector3> GeneratePoissonDiskSamplingPositions(PrefabSettings settings)
 {
     Bounds bounds = terrainMesh.bounds;
-    List<Vector3> samplePoints = PoissonDiskSampling.GeneratePoints(settings.poissonDiskRadius, new Vector2(bounds.size.x, bounds.size.z), settings.minHeight, settings.maxHeight, settings.poissonDiskMaxSamples);
-    return samplePoints;
+    Vector3 sampleRegionSize = new Vector3(bounds.size.x, bounds.size.y, bounds.size.z);
+
+    MeshCollider terrainMeshCollider = terrainObject.GetComponent<MeshCollider>();
+
+    float adjustedRadius = settings.poissonDiskRadius * settings.scaleFactor;
+    float adjustedCellSize = adjustedRadius / Mathf.Sqrt(3);
+
+    // Add PoissonDiskSampling as a component
+    PoissonDiskSampling poissonDiskSampling = gameObject.AddComponent<PoissonDiskSampling>();
+    poissonDiskSampling.Initialize(terrainMeshCollider);
+    poissonDiskSampling.radius = adjustedRadius;
+    poissonDiskSampling.cellSize = adjustedCellSize;
+    poissonDiskSampling.sampleRegionSize = sampleRegionSize;
+    poissonDiskSampling.numSamplesBeforeRejection = settings.poissonDiskMaxSamples;
+
+    float minHeight = settings.useCustomHeightRange ? settings.minHeight : 0;
+    float maxHeight = settings.useCustomHeightRange ? settings.maxHeight : Mathf.Max(bounds.size.y, settings.distanceFromSurface);
+
+    Bounds terrainBounds = terrainMesh.bounds;
+    Vector3 terrainCenter = celestialBodyTransform.TransformPoint(terrainBounds.center);
+
+    // Generate Poisson Disk Sampling positions
+    (List<Vector3> points, Vector3 _) = poissonDiskSampling.GeneratePoints(
+        settings.poissonDiskRadius, sampleRegionSize, minHeight, maxHeight, settings.poissonDiskMaxSamples, terrainCenter, terrainMeshCollider
+    );
+    // Remove PoissonDiskSampling component after generating points
+    DestroyImmediate(poissonDiskSampling);
+
+    return points;
 }
+
+
 
     public void DeletePrefabs(PrefabSettings settings)
     {
