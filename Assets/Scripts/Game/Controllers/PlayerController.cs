@@ -19,7 +19,12 @@ public class PlayerController : GravityObject
     public bool isFlying = false;
     public bool isWalking = false;
     public bool isDescending = false;
-    private bool grounded = false;
+    private bool isGrounded = false;
+    public float atmosphereRadius = 250f;
+    public float gravityStrength = 1f; // Strength of the gravity force pulling the player towards the celestial body
+    public float oceanRadius = 199f;
+    public bool canEscapeAtmosphere = false;
+    public bool canEnterOcean = false;
 
 
 
@@ -146,8 +151,8 @@ public class PlayerController : GravityObject
 
         // Movement
         // Movement
-    bool isGrounded = IsGrounded();
-    grounded = isGrounded;
+    bool groundCheck = IsGrounded();
+    isGrounded = groundCheck;
         Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         bool running = Input.GetKey(KeyCode.LeftShift);
         targetVelocity = transform.TransformDirection(input.normalized) * ((running) ? runSpeed : walkSpeed);
@@ -158,15 +163,38 @@ public class PlayerController : GravityObject
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1 * Time.deltaTime);
     }
     
-        smoothVelocity = Vector3.SmoothDamp(smoothVelocity, targetVelocity, ref smoothVRef, (isGrounded) ? vSmoothTime : airSmoothTime);
+        smoothVelocity = Vector3.SmoothDamp(smoothVelocity, targetVelocity, ref smoothVRef, (groundCheck) ? vSmoothTime : airSmoothTime);
 
     if (isPlayerInOcean())
     {
+        if (canEnterOcean){
         Debug.Log("Player is in ocean");
         isSwimming = true;
-    }else {
+        }
+        else{
+            Debug.Log("Floating to the top of the ocean");
+            isSwimming = false;
+            float sqrDst = (celestialBody.Position - rb.position).sqrMagnitude;
+            Vector3 forceDir = (celestialBody.Position - rb.position).normalized;
+            Vector3 acceleration = forceDir * Universe.gravitationalConstant * celestialBody.mass / sqrDst;
+            rb.AddForce(-acceleration*100f, ForceMode.Acceleration);
+
+        }
+
+    
+    }else if (IsPlayerOutsideAtmosphere() && !canEscapeAtmosphere){
+        isOutsideEarth = true;
+        energy = 0;
+        float sqrDst = (celestialBody.Position - rb.position).sqrMagnitude;
+        Vector3 forceDir = (celestialBody.Position - rb.position).normalized;
+        Vector3 acceleration = forceDir * Universe.gravitationalConstant * celestialBody.mass / sqrDst;
+        rb.AddForce(acceleration, ForceMode.Acceleration);
+    
+    }
+    else {
         Debug.Log("Player is not in ocean");
         isSwimming = false;
+        isOutsideEarth = false;
     }
 
             // Flying mode
@@ -194,7 +222,7 @@ public class PlayerController : GravityObject
     public bool isPlayerInOcean()
     {
         float playerDistance = Vector3.Distance(transform.position, celestialBody.transform.position);
-        if (playerDistance < 198f)
+        if (playerDistance < oceanRadius)
         {
             return true;
         }
@@ -204,33 +232,19 @@ public class PlayerController : GravityObject
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public bool IsPlayerOutsideAtmosphere()
     {
-        if (other.gameObject.CompareTag("WaterTrigger"))
+        float playerDistance = Vector3.Distance(transform.position, celestialBody.transform.position);
+        if (playerDistance > atmosphereRadius)
         {
-            isSwimming = true;
-            Debug.Log("Swimming");
+            return true;
         }
-        else if (other.CompareTag("AtmosphereTrigger"))
+        else
         {
-            isOutsideEarth = false;
+            return false;
         }
     }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("WaterTrigger"))
-        {
-            isSwimming = false;
-            Debug.Log("Not Swimming");
-        }
-        else if (other.CompareTag("AtmosphereTrigger"))
-        {
-            isOutsideEarth = true;
-            energy = 0;
-            Debug.Log("Outside Earth");
-        }
-    }
+ 
 
     private void UpdateHasCrystal(bool value)
     {
@@ -267,7 +281,7 @@ void Update()
         energyLightController.UpdateEnergyLevel(energy);
     }
 
-    isDescending = !grounded && !isFlying && downVelocity > 0;
+    isDescending = !isGrounded && !isFlying && downVelocity > 0;
 }
 
 // Replace your FixedUpdate() method with this one:
@@ -335,8 +349,8 @@ void FixedUpdate()
         // Sphere must not overlay terrain at origin otherwise no collision will be detected
         // so rayRadius should not be larger than controller's capsule collider radius
         const float rayRadius = .3f;
-        const float groundedRayDst = .3f;
-        bool grounded = false;
+        const float isGroundedRayDst = .3f;
+        bool isGrounded = false;
 
         if (referenceBody)
         {
@@ -349,11 +363,11 @@ void FixedUpdate()
                 Vector3 rayOrigin = rb.position + offsetToFeet + transform.up * rayRadius;
                 Vector3 rayDir = -transform.up;
 
-                grounded = Physics.SphereCast(rayOrigin, rayRadius, rayDir, out hit, groundedRayDst, walkableMask);
+                isGrounded = Physics.SphereCast(rayOrigin, rayRadius, rayDir, out hit, isGroundedRayDst, walkableMask);
             }
         }
 
-        return grounded;
+        return isGrounded;
     }
 
     void UpdateEnergy()

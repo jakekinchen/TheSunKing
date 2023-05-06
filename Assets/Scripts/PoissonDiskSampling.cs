@@ -16,13 +16,21 @@ public class PoissonDiskSampling : MonoBehaviour
 
 public void Initialize(MeshCollider terrainMeshCollider)
 {
-    float minHeight = 0;
-    float maxHeight = 1;
+    float minHeight = 200;
+    float maxHeight = 250;
 
     Bounds terrainBounds = terrainMeshCollider.sharedMesh.bounds;
     Vector3 terrainCenter = terrainMeshCollider.transform.TransformPoint(terrainBounds.center);
 
-    (List<Vector3> points, Vector3 _) = GeneratePoints(radius, sampleRegionSize, minHeight, maxHeight, numSamplesBeforeRejection, terrainCenter, terrainMeshCollider);
+    // Generate a random point within the terrain bounds
+    Vector3 randomPoint = new Vector3(
+        Random.Range(terrainBounds.min.x, terrainBounds.max.x),
+        Random.Range(minHeight, maxHeight),
+        Random.Range(terrainBounds.min.z, terrainBounds.max.z)
+    );
+    randomPoint = terrainMeshCollider.transform.TransformPoint(randomPoint);
+
+    (List<Vector3> points, Vector3 _) = GeneratePoints(radius, sampleRegionSize, minHeight, maxHeight, numSamplesBeforeRejection, randomPoint, terrainMeshCollider);
 }
 
 
@@ -69,12 +77,12 @@ private float GetTerrainHeight(Vector3 point, MeshCollider terrainMeshCollider)
             {
                 Vector3 dir = Random.insideUnitSphere;
                 Vector3 candidate = spawnCentre + dir.normalized * Random.Range(radius, 2 * radius);
-                candidate.y = Mathf.Clamp(candidate.y, minHeight, maxHeight);
-                if (IsValid(candidate, sampleRegionSize, cellSize, radius, points, grid, is2D))
-                {
-                    float terrainHeight = GetTerrainHeight(candidate, terrainMeshCollider);
-                    candidate.y += terrainHeight;
+                float terrainHeight = GetTerrainHeight(candidate, terrainMeshCollider);  // Get the terrain height for the candidate
+                candidate.y = Mathf.Clamp(candidate.y + terrainHeight, minHeight, maxHeight);  // Add the terrain height to candidate.y
+                Bounds terrainBounds = terrainMeshCollider.bounds; // Get the terrain bounds
 
+                if (IsValid(candidate, terrainBounds, cellSize, radius, points, grid, is2D))
+                {
                     Vector3 localCandidate = transform.InverseTransformPoint(candidate);
                     points.Add(localCandidate);
                     spawnPoints.Add(candidate);
@@ -92,9 +100,9 @@ private float GetTerrainHeight(Vector3 point, MeshCollider terrainMeshCollider)
         return (points, sampleRegionSize);
     }
 
-    static bool IsValid(Vector3 candidate, Vector3 sampleRegionSize, float cellSize, float radius, List<Vector3> points, Vector3[,,] grid, bool is2D)
+    public bool IsValid(Vector3 candidate, Bounds terrainBounds, float cellSize, float radius, List<Vector3> points, Vector3[,,] grid, bool is2D)
     {
-        if (candidate.x >= 0 && candidate.x < sampleRegionSize.x && candidate.y >= 0 && candidate.y < sampleRegionSize.y && candidate.z >= 0 && candidate.z < sampleRegionSize.z)
+        if (terrainBounds.Contains(candidate))
         {
             int cellX = (int)(candidate.x / cellSize);
             int cellY = (int)(candidate.y / cellSize);
