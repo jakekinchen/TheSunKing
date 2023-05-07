@@ -50,6 +50,7 @@ public class GameController : MonoBehaviour
 
     public void ActivateWin()
     {
+        Debug.Log("Win activated");
         ToggleGame(false);
     }
 
