@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6886234197433275644}
   - component: {fileID: 2507334268597268170}
   - component: {fileID: 8212136146716365363}
-  - component: {fileID: 8660500443212780984}
+  - component: {fileID: 3389670683147266480}
   m_Layer: 0
   m_Name: Bird Pref B
   m_TagString: Untagged
@@ -84,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8660500443212780984
+--- !u!114 &3389670683147266480
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,3 +105,4 @@ MonoBehaviour:
   avgAvoidanceHeading: {x: 0, y: 0, z: 0}
   centreOfFlockmates: {x: 0, y: 0, z: 0}
   numPerceivedFlockmates: 0
+  oceanBound: 0

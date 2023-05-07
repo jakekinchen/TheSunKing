@@ -12,22 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a5c144b1c1c4532bc4d2500f7b2a7f, type: 3}
   m_Name: Boid Settings
   m_EditorClassIdentifier: 
-  minSpeed: 2
-  maxSpeed: 5
-  perceptionRadius: 3.36
-  avoidanceRadius: 5.08
-  maxSteerForce: 3.5
+  minSpeed: 4
+  maxSpeed: 8
+  perceptionRadius: 2.5
+  avoidanceRadius: 2
+  maxSteerForce: 8
+  rotationSpeed: 5
   surfaceAdherence: 0.1
   surfaceSeparationWeight: 1
   gravityStrength: 9.8
   gravityWeight: 1
-  alignWeight: 1
+  alignWeight: 2
   cohesionWeight: 1
-  seperateWeight: 1
-  targetWeight: 1
+  seperateWeight: 2.5
+  targetWeight: 2
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1024
-  boundsRadius: 2.09
-  avoidCollisionWeight: 20.86
-  collisionAvoidDst: 22.65
+  boundsRadius: 1
+  avoidCollisionWeight: 22.4
+  collisionAvoidDst: 5
+  heightSteerWeight: 5

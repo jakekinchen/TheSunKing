@@ -15,6 +15,8 @@ public class BoidSpawner : MonoBehaviour {
     public bool spawnInOcean = false;
     public float oceanHeightMin = 0f;
     public float oceanHeightMax = 200f;
+    public float landHeightMin = 200f;
+    public float landHeightMax = 260f;
 
     void Awake () {
         for (int i = 0; i < spawnCount; i++) {
@@ -36,6 +38,11 @@ public class BoidSpawner : MonoBehaviour {
 
             boid.SetColour(colour);
             boid.SetPlanet(boid.planet.transform);
+            if (spawnInOcean) {
+                boid.SetHeight(oceanHeightMin, oceanHeightMax);
+            }else{
+                boid.SetHeight(landHeightMin, landHeightMax);
+            }
             //Debug.Log("Planet: " + boid.planet);
         }
     }

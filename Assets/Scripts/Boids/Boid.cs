@@ -35,17 +35,33 @@ public class Boid : MonoBehaviour {
     Transform cachedTransform;
     Transform target;
 
+    private float minHeight;
+    private float maxHeight;
+
+    public bool oceanBound = false;
+
     void Awake () {
         planetObject = GameObject.Find("Body Simulation/Humble Abode");
+        Debug.Log("Planet object is: " + planetObject);
+        Debug.Log("Hey there");
         planet = planetObject.transform;
         material = transform.GetComponentInChildren<MeshRenderer> ().material;
         cachedTransform = transform;
+
     }
 
     public void SetPlanet(Transform planetTransform)
 {
     planet = planetTransform;
 }
+
+public void SetHeight(float minimumHeight, float maximumHeight)
+{
+    minHeight = minimumHeight;
+    maxHeight = maximumHeight;
+    Debug.Log("Min height: " + minHeight + " Max height: " + maxHeight);
+}
+
 Vector3 OptimizedAvoidanceRays()
 {
     Vector3[] rayDirections = BoidHelper.directions;
@@ -145,7 +161,15 @@ Vector3 OptimizedAvoidanceRays()
             }
             acceleration += surfaceSeparationForce;
         }
-
+        float currentHeight = Vector3.Distance(position, planet.position);
+    if (currentHeight < minHeight || currentHeight > maxHeight)
+    {
+        float desiredHeight = Mathf.Clamp(currentHeight, minHeight, maxHeight);
+        Vector3 desiredHeightDirection = (planet.position - position).normalized * desiredHeight;
+        Vector3 targetHeightPosition = planet.position - desiredHeightDirection;
+        Vector3 heightSteerForce = SteerTowards(targetHeightPosition - position) * settings.heightSteerWeight;
+        acceleration += heightSteerForce;
+    }
         velocity += acceleration * Time.deltaTime;
         float speed = velocity.magnitude;
         Vector3 dir = velocity / speed;

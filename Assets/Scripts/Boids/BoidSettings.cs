@@ -31,5 +31,6 @@ public class BoidSettings : ScriptableObject {
     public float boundsRadius = .27f;
     public float avoidCollisionWeight = 10;
     public float collisionAvoidDst = 5;
+    public float heightSteerWeight = 1;
 
 }
