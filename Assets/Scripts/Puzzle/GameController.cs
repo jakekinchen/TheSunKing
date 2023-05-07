@@ -5,8 +5,13 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public GameObject puzzle1Canvas;
+    public GameObject xGame;
+    public GameObject zGame;
     public Camera playerCamera;
     public Camera puzzle1Camera;
+
+    public bool zGameActive = false;
+    public bool xGameActive = false;
 
     //public GameManager gameManager; // Commented out
 
@@ -19,17 +24,28 @@ public class GameController : MonoBehaviour
     {
         
         puzzle1Canvas.SetActive(false);
+        zGame.SetActive(false);
+        xGame.SetActive(false);
         puzzle1Camera.enabled = false;
         
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKeyDown(KeyCode.Z) && !xGameActive)
         {
+            zGameActive = !zGameActive;
             gameActive = !gameActive;
             ToggleGame(gameActive);
+            zGame.SetActive(zGameActive);
+        }if (Input.GetKeyDown(KeyCode.X) && !zGameActive)
+        {
+            xGameActive = !xGameActive;
+            gameActive = !gameActive;
+            ToggleGame(gameActive);
+            xGame.SetActive(xGameActive);
         }
+
     }
 
     public void ActivateWin()
@@ -43,14 +59,17 @@ public class GameController : MonoBehaviour
         puzzle1Camera.enabled = active;
         playerCamera.enabled = !active;
         FindThingsAndDeactivate(active);
+        simulation.GetComponent<NBodySimulation>().pauseSimulation = active;
         simulation.SetActive(!active);
         ship.SetActive(!active);
         if (active)
         {
-           // Time.timeScale = 0;
+            Debug.Log("Game is active");
+           Time.timeScale = 0;
         }else
         {
-            //Time.timeScale = 1;
+            Debug.Log("Game is inactive");
+            Time.timeScale = 1;
         }
         
         /*

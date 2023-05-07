@@ -60,7 +60,7 @@ private float GetTerrainHeight(Vector3 point, MeshCollider terrainMeshCollider)
 }
     public (List<Vector3> points, Vector3 sampleRegionSize) GeneratePoints(float radius, Vector3 sampleRegionSize, float minHeight, float maxHeight, int numSamplesBeforeRejection, Vector3 terrainCenter, MeshCollider terrainMeshCollider)
     {
-        Debug.Log("Generating points with radius: " + radius + " and sampleRegionSize: " + sampleRegionSize + " and minHeight: " + minHeight + " and maxHeight: " + maxHeight + " and numSamplesBeforeRejection: " + numSamplesBeforeRejection);
+        //Debug.Log("Generating points with radius: " + radius + " and sampleRegionSize: " + sampleRegionSize + " and minHeight: " + minHeight + " and maxHeight: " + maxHeight + " and numSamplesBeforeRejection: " + numSamplesBeforeRejection);
         cellSize = radius / Mathf.Sqrt(is2D ? 2 : 3); 
         grid = new Vector3[Mathf.CeilToInt(sampleRegionSize.x / cellSize), is2D ? 1 : Mathf.CeilToInt(sampleRegionSize.y / cellSize), Mathf.CeilToInt(sampleRegionSize.z / cellSize)];
         List<Vector3> points = new List<Vector3>();
@@ -133,10 +133,10 @@ private float GetTerrainHeight(Vector3 point, MeshCollider terrainMeshCollider)
             }
             return true;
         }
-        Debug.Log("Candidate is not valid with candidate: " + candidate + " and sampleRegionSize: " + sampleRegionSize + " and cellSize: " + cellSize + " and radius: " + radius + " and points: " + points + " and grid: " + grid);
+        //Debug.Log("Candidate is not valid with candidate: " + candidate + " and sampleRegionSize: " + sampleRegionSize + " and cellSize: " + cellSize + " and radius: " + radius + " and points: " + points + " and grid: " + grid);
         // Draw a wire sphere around the candidate to visualize the failure
         DrawDebugSphere(candidate, radius * 2, Color.red, 5f); // Increase sphere radius
-        Debug.Log("Debug sphere drawn at: " + candidate);
+        //Debug.Log("Debug sphere drawn at: " + candidate);
 
         return false;
     }
@@ -158,7 +158,7 @@ private float GetTerrainHeight(Vector3 point, MeshCollider terrainMeshCollider)
             Debug.DrawLine(p1, p3, color, duration * 5); // Increase duration
             Debug.DrawLine(p2, p4, color, duration * 5); // Increase duration
             Debug.DrawLine(p3, p4, color, duration * 5); // Increase duration
-            Debug.Log("Debug sphere drawn at: " + center);
+            //Debug.Log("Debug sphere drawn at: " + center);
 
         }
     }
