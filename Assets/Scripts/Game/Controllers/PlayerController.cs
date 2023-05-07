@@ -100,6 +100,10 @@ public class PlayerController : GravityObject
     bool debug_playerFrozen;
     Animator animator;
 
+    private PlayerSoundManager playerSoundManager;
+    //private AudioManager audioManager;
+    private bool enterWaterPlayed = false;
+
     //declare GameControl script
     public GameController gameController;
 
@@ -114,6 +118,8 @@ public class PlayerController : GravityObject
         animator = GetComponentInChildren<Animator>();
         inputSettings.Begin();
 
+        playerSoundManager = GetComponent<PlayerSoundManager>();
+        //audioManager = GetComponent<AudioManager>();
     }
 
 
@@ -168,11 +174,20 @@ public class PlayerController : GravityObject
     if (isPlayerInOcean())
     {
         if (canEnterOcean){
-        Debug.Log("Player is in ocean");
-        isSwimming = true;
+            //Debug.Log("Player is in ocean");
+            if (!enterWaterPlayed) 
+            {
+                Debug.Log("enterWatersound");
+                //audioManager.PlayOneShotDirectly("enterWater");
+                playerSoundManager.PlaySound("onWaterEnter");
+                enterWaterPlayed = true;
+            }
+            isSwimming = true;
         }
-        else{
+        else
+        {
             Debug.Log("Floating to the top of the ocean");
+            enterWaterPlayed = false;
             isSwimming = false;
             float sqrDst = (celestialBody.Position - rb.position).sqrMagnitude;
             Vector3 forceDir = (celestialBody.Position - rb.position).normalized;
@@ -192,7 +207,8 @@ public class PlayerController : GravityObject
     
     }
     else {
-        Debug.Log("Player is not in ocean");
+        //Debug.Log("Player is not in ocean");
+        enterWaterPlayed = false;
         isSwimming = false;
         isOutsideEarth = false;
     }
@@ -202,7 +218,7 @@ public class PlayerController : GravityObject
     {
         energy -= 0.1f;
         rb.AddForce(transform.up * flyForce * 0.07f, ForceMode.VelocityChange);
-        Debug.Log("Flying");
+        //Debug.Log("Flying");
         isFlying = true;
     }
     else
@@ -320,28 +336,101 @@ void FixedUpdate()
     CalculateUpDownVelocity();
 
 // Handling animations
+
+    // Set animator's parameters
+    animator.SetBool("isFlying", isFlying && energy > 3);
+    animator.SetBool("isWalking", !isSwimming && !isFlying && (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0));
+    animator.SetBool("isSwimming", isSwimming && (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0));
+
+    // Play sounds based on movement state
     if (isFlying && energy > 3)
     {
-        animator.SetBool("isFlying", true);
-        animator.SetBool("isWalking", false);
+        if (!playerSoundManager.IsPlaying("flying"))
+        {
+                //playerSoundManager.StopPlaying("walking");
+                //playerSoundManager.StopPlaying("swimming");
+                playerSoundManager.PlaySound("cape");
+        }
     }
-    else if (isDescending)
+    else if (!isSwimming && !isFlying && (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0))
     {
-        animator.SetBool("isFlying", true);
-        animator.SetBool("isWalking", false);
+        if (!playerSoundManager.IsPlaying("walking"))
+        {
+                //playerSoundManager.StopPlaying("swimming");
+                //playerSoundManager.StopPlaying("flying");
+                playerSoundManager.PlaySound("walking");
+        }
     }
-    else if (!isFlying && (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0))
+    else if (isSwimming && (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0))
     {
-        animator.SetBool("isFlying", false);
-        animator.SetBool("isWalking", true);
+        if (!playerSoundManager.IsPlaying("swimming"))
+        {
+                //playerSoundManager.StopPlaying("walking");
+                //playerSoundManager.StopPlaying("flying");
+                playerSoundManager.PlaySound("swimming");
+        }
     }
     else
     {
-        animator.SetBool("isFlying", false);
-        animator.SetBool("isWalking", false);
-    }      
+        //audioManager.StopPlaying("walking");
+        //audioManager.StopPlaying("swimming");
+        //audioManager.StopPlaying("flying");
+    }
 
-}
+        //if (isFlying && energy > 3)
+        //{
+        //    animator.SetBool("isFlying", true);
+        //    animator.SetBool("isWalking", false);
+        //    animator.SetBool("isSwimming", false);
+
+        //    audioManager.StopPlaying("walking");
+        //    audioManager.StopPlaying("swimming");
+        //    audioManager.PlayOnce("flying");
+        //    }
+        //else if (isDescending)
+        //{
+        //    animator.SetBool("isFlying", true);
+        //    animator.SetBool("isSwimming", false);
+        //    animator.SetBool("isWalking", false);
+        //}
+        //else if (!isSwimming && !isFlying && (Input.GetAxisRaw("Vertical") != 0 || !isSwimming && !isFlying && Input.GetAxisRaw("Horizontal") != 0))
+        //{
+        //    animator.SetBool("isFlying", false);
+        //    animator.SetBool("isSwimming", false);
+        //    animator.SetBool("isWalking", true);
+
+        //    audioManager.StopPlaying("walking");
+        //    audioManager.StopPlaying("swimming");
+        //    audioManager.Play("walking");
+        //} 
+        //else if (isSwimming && !isFlying && (Input.GetAxisRaw("Vertical") !=0 || isSwimming && !isFlying &&  Input.GetAxisRaw("Horizontal") != 0))
+        //{
+        //    animator.SetBool("isFlying", false);
+        //    animator.SetBool("isWalking", false);
+        //    animator.SetBool("isSwimming", true);
+
+        //    audioManager.StopPlaying("walking");
+        //    audioManager.StopPlaying("flying");
+        //    audioManager.Play("swimming");
+        //} 
+        //else if (isSwimming && isFlying && (Input.GetAxisRaw("Vertical") != 0 || isSwimming && isFlying && Input.GetAxisRaw("Horizontal") != 0))
+        //{
+        //    animator.SetBool("isFlying", false);
+        //    animator.SetBool("isWalking", false);
+        //    animator.SetBool("isSwimming", true);
+
+        //    audioManager.StopPlaying("walking");
+        //    audioManager.StopPlaying("flying");
+        //    audioManager.Play("swimming");
+        //}
+        //else
+        //{
+        //    animator.SetBool("isFlying", false);
+        //    animator.SetBool("isWalking", false);
+        //    animator.SetBool("isSwimming", false);
+        //}      
+
+    }
 
 
     bool IsGrounded()

@@ -15,6 +15,11 @@ public class SoundManagerVer2 : MonoBehaviour
 
     public Slider masterSlider, musicSlider, sfxSlider;
 
+    public AudioSource audioSource;
+
+    private static bool keepFadingIn;
+    private static bool keepFadingOut;
+
     private void Start()
     {
         float vol = 0f;
@@ -28,7 +33,6 @@ public class SoundManagerVer2 : MonoBehaviour
         masterLabel.text = Mathf.RoundToInt(masterSlider.value + 80).ToString();
         musicLabel.text = Mathf.RoundToInt(musicSlider.value + 80).ToString();
         sfxLabel.text = Mathf.RoundToInt(sfxSlider.value + 80).ToString();
-
     }
 
     void Awake()
@@ -67,5 +71,24 @@ public class SoundManagerVer2 : MonoBehaviour
         theMixer.SetFloat("SFXVolParam", sfxSlider.value);
 
         PlayerPrefs.SetFloat("SFXVolParam", sfxSlider.value);
+    }
+
+    public void FadeOutAudio(float duration)
+    {
+        StartCoroutine(FadeOutCoroutine(duration));
+    }
+
+    private IEnumerator FadeOutCoroutine(float duration)
+    {
+        float startVolume = audioSource.volume;
+
+        while (audioSource.volume > 0)
+        {
+            audioSource.volume -= startVolume * Time.deltaTime / duration;
+            yield return null;
+        }
+
+        audioSource.Stop();
+        audioSource.volume = startVolume;
     }
 }

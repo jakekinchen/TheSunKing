@@ -1660,7 +1660,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 6781786964532493269}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 399615954}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81e970e288e94463595d9583b64c0893, type: 3}
@@ -2103,6 +2103,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 333618440}
   m_CullTransparentMesh: 1
+--- !u!1 &399615954 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8343975638777285471, guid: 151c5072b86174e05abae9facc90736d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6781786964532493269}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &486040617
 GameObject:
   m_ObjectHideFlags: 0
@@ -8486,6 +8492,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1705596839}
     - target: {fileID: 252898410, guid: 151c5072b86174e05abae9facc90736d, type: 3}
+      propertyPath: audioSource
+      value: 
+      objectReference: {fileID: 6781786964532493270}
+    - target: {fileID: 252898410, guid: 151c5072b86174e05abae9facc90736d, type: 3}
       propertyPath: masterLabel
       value: 
       objectReference: {fileID: 554043741}
@@ -8497,6 +8507,10 @@ PrefabInstance:
       propertyPath: masterSlider
       value: 
       objectReference: {fileID: 954763230}
+    - target: {fileID: 252898411, guid: 151c5072b86174e05abae9facc90736d, type: 3}
+      propertyPath: Loop
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6648098722318511237, guid: 151c5072b86174e05abae9facc90736d,
         type: 3}
       propertyPath: m_RootOrder
@@ -8559,6 +8573,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 151c5072b86174e05abae9facc90736d, type: 3}
+--- !u!82 &6781786964532493270 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 252898411, guid: 151c5072b86174e05abae9facc90736d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6781786964532493269}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6781786964532493274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399615954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 658d1144982cd7b419608c823d039ccc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7685407415148320145
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8845,6 +8877,18 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Start
+          m_StringArgument: Solar System
+          m_BoolArgument: 0
+        m_CallState: 1
+      - m_Target: {fileID: 252898410}
+        m_TargetAssemblyTypeName: SoundManagerVer2, Assembly-CSharp
+        m_MethodName: FadeOutAudio
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 6
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1

@@ -33,7 +33,7 @@ public class MenuButton : MonoBehaviour
                 else if (thisIndex == 1) {
                     settings.SetActive(true);
                 } else {
-                    UnityEditor.EditorApplication.isPlaying = false;
+                    //UnityEditor.EditorApplication.isPlaying = false;
                     Application.Quit();
                 }
             } else if (animator.GetBool ("pressed")) {
