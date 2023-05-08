@@ -373,6 +373,7 @@ GameObject:
   - component: {fileID: 5406502976704646172}
   - component: {fileID: 5406502976704646173}
   - component: {fileID: 7588693165441917034}
+  - component: {fileID: 8412306378509025285}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -439,12 +440,10 @@ MonoBehaviour:
   maxEnergy: 100
   minEnergy: 0
   energyRechargeDelay: 1
-  energyRechargeDelayTimer: 0
-  energyRechargeDelayTimerMax: 1
-  energyRechargeDelayTimerMin: 0
-  energyRechargeDelayTimerReset: 0
   sun: {fileID: 0}
   energy: 0
+  sunCrystal: {fileID: 0}
+  hasSunCrystal: 0
   isSwimming: 0
   isOutsideEarth: 0
   celestialBody: {fileID: 0}
@@ -508,6 +507,20 @@ MonoBehaviour:
   maxEnergy: 100
   minBloomIntensity: 0
   maxBloomIntensity: 3
+--- !u!114 &8412306378509025285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5406502976704646146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f601737e65c484ad5b276dba391be12d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collectedObjectsCount: 0
+  playerController: {fileID: 5406502976704646175}
 --- !u!1001 &2408211703680514775
 PrefabInstance:
   m_ObjectHideFlags: 0

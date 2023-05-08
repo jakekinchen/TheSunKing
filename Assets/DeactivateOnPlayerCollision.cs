@@ -9,6 +9,15 @@ public class DeactivateOnPlayerCollision : MonoBehaviour
     [SerializeField] private float popAnimationDuration = 1f;
     [SerializeField] private bool isPuzzleCrystal = false;
     [SerializeField] GameController gameController;
+    [SerializeField] public CollectibleCounter collectibleCounter;
+
+    void Start()
+    {
+        if (collectibleCounter == null)
+        {
+            collectibleCounter = GameObject.Find("Player").GetComponent<CollectibleCounter>();
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -105,5 +114,9 @@ public class DeactivateOnPlayerCollision : MonoBehaviour
         //set parent to null
         crystalParticleSystem.transform.parent = null;
         gameObject.SetActive(false);
+        if (!isPuzzleCrystal)
+        {
+           collectibleCounter.UpdateCollectibleCounter();
+        }
     }
 }

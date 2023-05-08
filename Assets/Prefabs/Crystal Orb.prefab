@@ -4934,8 +4934,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   crystalParticleSystem: {fileID: 427773135688165822}
+  crystalParticleSystem2: {fileID: 0}
   useAnimation: 1
   popAnimationDuration: 1
+  isPuzzleCrystal: 0
+  gameController: {fileID: 0}
+  collectibleCounter: {fileID: 0}
 --- !u!1001 &6887020884915503778
 PrefabInstance:
   m_ObjectHideFlags: 0

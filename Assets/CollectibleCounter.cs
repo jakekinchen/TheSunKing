@@ -9,22 +9,23 @@ public class CollectibleCounter : MonoBehaviour
 
     private void Start()
     {
-        UpdateCollectibleCount();
+        
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<DeactivateOnPlayerCollision>())
         {
-            collectedObjectsCount++;
-            addEnergy();
-            UpdateCollectibleCount();
+            //collectedObjectsCount++;
+            //addEnergy();
+            //UpdateCollectibleCounter();
         }
     }
 
-    private void UpdateCollectibleCount()
+    public void UpdateCollectibleCounter()
     {
        collectedObjectsCount += 1;
+       playerController.energy += 50;
        if(collectedObjectsCount >= 3)
        {
            TriggerWin();
