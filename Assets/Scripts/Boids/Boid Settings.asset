@@ -15,7 +15,7 @@ MonoBehaviour:
   minSpeed: 4
   maxSpeed: 8
   perceptionRadius: 2.5
-  avoidanceRadius: 2
+  avoidanceRadius: 3
   maxSteerForce: 8
   rotationSpeed: 5
   surfaceAdherence: 0.1
@@ -29,7 +29,7 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1024
-  boundsRadius: 1
+  boundsRadius: 3
   avoidCollisionWeight: 22.4
   collisionAvoidDst: 5
-  heightSteerWeight: 5
+  heightSteerWeight: 15.05

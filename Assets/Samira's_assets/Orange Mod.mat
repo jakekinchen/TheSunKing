@@ -39,9 +39,9 @@ Material:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
     - _BottomLine: 0.833
-    - _Metallic: 0.867
-    - _Smoothness: 0.251
-    - _TopLine: 0.806
+    - _Metallic: 0.9
+    - _Smoothness: 0.3
+    - _TopLine: 0.908
     m_Colors:
     - _BaseColor: {r: 1.1353014, g: 0.053495876, b: 0.053495876, a: 0}
     - _BottomColor: {r: 0.92215145, g: 0.07724829, b: 0.019312073, a: 0.8627451}

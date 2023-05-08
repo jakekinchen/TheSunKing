@@ -21,13 +21,11 @@ public class PlayerController : GravityObject
     public bool isWalking = false;
     public bool isDescending = false;
     private bool isGrounded = false;
-    public float atmosphereRadius = 250f;
+    public float atmosphereRadius = 300f;
     public float gravityStrength = 1f; // Strength of the gravity force pulling the player towards the celestial body
     public float oceanRadius = 199f;
     public bool canEscapeAtmosphere = false;
     public bool canEnterOcean = false;
-
-
 
     [Header("Energy settings")]
     public float energyDrainRate = -0.005f;
@@ -69,12 +67,6 @@ public class PlayerController : GravityObject
     [Header("Crystal Collider")]
     public CrystalCollider crystalCollider;
     private bool hasCrystal = false;
-
-    // [Header("Puzzle 1 Settings")]
-    // public bool isInPuzzleMode = false;
-    // public Shape shape; 
-    // public Camera puzzle1Camera;
-
 
     // Private
     Rigidbody rb;
@@ -124,7 +116,6 @@ public class PlayerController : GravityObject
         //audioManager = GetComponent<AudioManager>();
     }
 
-
     public void ActivateSunCrystal()
     {
         sunCrystal.SetActive(true);
@@ -152,8 +143,8 @@ public class PlayerController : GravityObject
         }
 
         // Look input
-        yaw += Input.GetAxisRaw("Mouse X") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
-        pitch -= Input.GetAxisRaw("Mouse Y") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
+        yaw += Input.GetAxis("Mouse X") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
+        pitch -= Input.GetAxis("Mouse Y") * inputSettings.mouseSensitivity / 10 * mouseSensitivityMultiplier;
         pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
         float mouseSmoothTime = Mathf.Lerp(0.01f, maxMouseSmoothTime, inputSettings.mouseSmoothing);
         smoothPitch = Mathf.SmoothDampAngle(smoothPitch, pitch, ref pitchSmoothV, mouseSmoothTime);
@@ -167,19 +158,18 @@ public class PlayerController : GravityObject
         }
 
         // Movement
-        // Movement
-    bool groundCheck = IsGrounded();
-    isGrounded = groundCheck;
+        bool groundCheck = IsGrounded();
+        isGrounded = groundCheck;
         Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         bool running = Input.GetKey(KeyCode.LeftShift);
         targetVelocity = transform.TransformDirection(input.normalized) * ((running) ? runSpeed : walkSpeed);
 
-            if (input != Vector3.zero)
-    {
-        Quaternion targetRotation = Quaternion.LookRotation(targetVelocity, transform.up);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1 * Time.deltaTime);
-    }
-    
+        if (input != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(targetVelocity, transform.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1 * Time.deltaTime);
+        }
+
         smoothVelocity = Vector3.SmoothDamp(smoothVelocity, targetVelocity, ref smoothVRef, (groundCheck) ? vSmoothTime : airSmoothTime);
 
     if (isPlayerInOcean())
@@ -321,12 +311,10 @@ private IEnumerator UpdateCrystalParticles()
             float t = energy / 2f;
             var main = sunParticles.main;
             main.maxParticles = Convert.ToInt32(t);
-            main.simulationSpeed = (t+0.001f)/100;
+            //main.simulationSpeed = (t+0.001f)/100;
             yield return null;
-        }
-    
+        }  
 }
-
 
 // Replace your FixedUpdate() method with this one:
 void FixedUpdate()
@@ -375,8 +363,6 @@ void FixedUpdate()
     {
         if (!playerSoundManager.IsPlaying("flying"))
         {
-                //playerSoundManager.StopPlaying("walking");
-                //playerSoundManager.StopPlaying("swimming");
                 playerSoundManager.PlaySound("cape");
         }
     }
@@ -384,8 +370,6 @@ void FixedUpdate()
     {
         if (!playerSoundManager.IsPlaying("walking"))
         {
-                //playerSoundManager.StopPlaying("swimming");
-                //playerSoundManager.StopPlaying("flying");
                 playerSoundManager.PlaySound("walking");
         }
     }
@@ -393,71 +377,13 @@ void FixedUpdate()
     {
         if (!playerSoundManager.IsPlaying("swimming"))
         {
-                //playerSoundManager.StopPlaying("walking");
-                //playerSoundManager.StopPlaying("flying");
                 playerSoundManager.PlaySound("swimming");
         }
     }
     else
     {
-        //audioManager.StopPlaying("walking");
-        //audioManager.StopPlaying("swimming");
-        //audioManager.StopPlaying("flying");
+      
     }
-
-        //if (isFlying && energy > 3)
-        //{
-        //    animator.SetBool("isFlying", true);
-        //    animator.SetBool("isWalking", false);
-        //    animator.SetBool("isSwimming", false);
-
-        //    audioManager.StopPlaying("walking");
-        //    audioManager.StopPlaying("swimming");
-        //    audioManager.PlayOnce("flying");
-        //    }
-        //else if (isDescending)
-        //{
-        //    animator.SetBool("isFlying", true);
-        //    animator.SetBool("isSwimming", false);
-        //    animator.SetBool("isWalking", false);
-        //}
-        //else if (!isSwimming && !isFlying && (Input.GetAxisRaw("Vertical") != 0 || !isSwimming && !isFlying && Input.GetAxisRaw("Horizontal") != 0))
-        //{
-        //    animator.SetBool("isFlying", false);
-        //    animator.SetBool("isSwimming", false);
-        //    animator.SetBool("isWalking", true);
-
-        //    audioManager.StopPlaying("walking");
-        //    audioManager.StopPlaying("swimming");
-        //    audioManager.Play("walking");
-        //} 
-        //else if (isSwimming && !isFlying && (Input.GetAxisRaw("Vertical") !=0 || isSwimming && !isFlying &&  Input.GetAxisRaw("Horizontal") != 0))
-        //{
-        //    animator.SetBool("isFlying", false);
-        //    animator.SetBool("isWalking", false);
-        //    animator.SetBool("isSwimming", true);
-
-        //    audioManager.StopPlaying("walking");
-        //    audioManager.StopPlaying("flying");
-        //    audioManager.Play("swimming");
-        //} 
-        //else if (isSwimming && isFlying && (Input.GetAxisRaw("Vertical") != 0 || isSwimming && isFlying && Input.GetAxisRaw("Horizontal") != 0))
-        //{
-        //    animator.SetBool("isFlying", false);
-        //    animator.SetBool("isWalking", false);
-        //    animator.SetBool("isSwimming", true);
-
-        //    audioManager.StopPlaying("walking");
-        //    audioManager.StopPlaying("flying");
-        //    audioManager.Play("swimming");
-        //}
-        //else
-        //{
-        //    animator.SetBool("isFlying", false);
-        //    animator.SetBool("isWalking", false);
-        //    animator.SetBool("isSwimming", false);
-        //}      
-
     }
 
 
@@ -495,9 +421,17 @@ void FixedUpdate()
 
         if (Physics.Linecast(transform.position, sun.transform.position, out hit))
         {
-            if (hit.collider.name != "Terrain Mesh" && angleToSun < 100)
+            if (hit.collider.name != "Terrain Mesh")
             {
-                energy += isFlying ? energyDrainRate : energyRechargeRate; // Adjust these values to modify energy consumption and replenishment rates
+                if (isFlying)
+                {
+                    energy += energyDrainRate;
+                }
+                else if (angleToSun < 100)
+                {
+                    energy += energyRechargeRate;
+                }
+
             }
             else
             {

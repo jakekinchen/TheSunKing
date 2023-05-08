@@ -1,15 +1,15 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class CollectibleCounter : MonoBehaviour
 {
     public int collectedObjectsCount = 0;
-    public TextMeshProUGUI collectibleCountTextMeshPro;
     public PlayerController playerController;
 
     private void Start()
     {
-        UpdateCollectibleCountText();
+        UpdateCollectibleCount();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -18,18 +18,29 @@ public class CollectibleCounter : MonoBehaviour
         {
             collectedObjectsCount++;
             addEnergy();
-            UpdateCollectibleCountText();
+            UpdateCollectibleCount();
         }
     }
 
-    private void UpdateCollectibleCountText()
+    private void UpdateCollectibleCount()
     {
-        collectibleCountTextMeshPro.text = $"Crystals: {collectedObjectsCount}";
+       collectedObjectsCount += 1;
+       if(collectedObjectsCount >= 3)
+       {
+           TriggerWin();
+       }
     }
 
     private void addEnergy()
     {
-        playerController.energy += 20;
+        playerController.energy += 50;
     }
+
+    private void TriggerWin()
+    {
+        Debug.Log("You win!");
+        SceneManager.LoadScene("Win");
+    }
+
 
 }
