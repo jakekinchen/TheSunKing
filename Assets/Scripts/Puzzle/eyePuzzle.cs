@@ -12,6 +12,9 @@ public class eyePuzzle : MonoBehaviour
     public Sprite closedEyeSprite;
     public Text winText;
     public GameObject winPanel; 
+    public GameController gameController;
+    private bool won = false;
+    
 
     private bool[] eyeStates;
 
@@ -79,7 +82,21 @@ public class eyePuzzle : MonoBehaviour
             }
         }
 
-        winText.enabled = allEyesOpen;
-        winPanel.SetActive(allEyesOpen);
+        //winText.enabled = allEyesOpen;
+       //winPanel.SetActive(allEyesOpen);
+       // StartCoroutine(WinWait());
+       
+        if (allEyesOpen && !won)
+        {
+            gameController.ActivateWin();
+            Debug.Log("game controller activated win");
+            won = true;
+        }
+    }
+
+    IEnumerator WinWait()
+    {
+        yield return new WaitForSeconds(4);
+        //winText.enabled = true;
     }
 }

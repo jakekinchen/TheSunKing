@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using System.Collections;
 
 public class PlayerController : GravityObject
 {
@@ -43,7 +44,10 @@ public class PlayerController : GravityObject
     public GameObject sun;
     public float energy;
     private Vignette _vignette;
-    [SerializeField] private EnergyLightController energyLightController;
+    //[SerializeField] private EnergyLightController energyLightController;
+    [SerializeField] private GameObject sunCrystal;
+    [SerializeField] private bool hasSunCrystal = false;
+    private ParticleSystem sunParticles;
 
 
     [Header("Environment Trigger settings")]
@@ -109,6 +113,7 @@ public class PlayerController : GravityObject
 
     void Awake()
     {
+        sunCrystal.SetActive(false);
         cam = GetComponentInChildren<Camera>();
         cameraLocalPos = cam.transform.localPosition;
         spaceship = FindObjectOfType<Ship>();
@@ -122,6 +127,15 @@ public class PlayerController : GravityObject
         //audioManager = GetComponent<AudioManager>();
     }
 
+
+    public void ActivateSunCrystal()
+    {
+        sunCrystal.SetActive(true);
+        hasSunCrystal = true;
+        sunParticles = sunCrystal.GetComponent<ParticleSystem>();
+        sunParticles.Play();
+        Debug.Log("Sun Crystal Activated");
+    }
 
 
     void InitRigidbody()
@@ -291,14 +305,30 @@ void Update()
         }
     }
 
-    if (sun)
+    if (sun && hasSunCrystal)
     {
         UpdateEnergy();
-        energyLightController.UpdateEnergyLevel(energy);
+        StartCoroutine(UpdateCrystalParticles());
+       // energyLightController.UpdateEnergyLevel(energy);
     }
 
     isDescending = !isGrounded && !isFlying && downVelocity > 0;
 }
+
+private IEnumerator UpdateCrystalParticles()
+{
+   
+        while (true)
+        {
+            float t = energy / 2f;
+            var main = sunParticles.main;
+            main.maxParticles = Convert.ToInt32(t);
+            main.simulationSpeed = (t+0.001f)/100;
+            yield return null;
+        }
+    
+}
+
 
 // Replace your FixedUpdate() method with this one:
 void FixedUpdate()

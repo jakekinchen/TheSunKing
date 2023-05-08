@@ -15,7 +15,7 @@ public class BoidSpawner : MonoBehaviour {
     public bool spawnInOcean = false;
     public float oceanHeightMin = 0f;
     public float oceanHeightMax = 200f;
-    public float landHeightMin = 200f;
+    public float landHeightMin = 202f;
     public float landHeightMax = 260f;
 
     void Awake () {

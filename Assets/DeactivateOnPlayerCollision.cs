@@ -25,7 +25,9 @@ public class DeactivateOnPlayerCollision : MonoBehaviour
             }
             if (isPuzzleCrystal)
             {
+                gameObject.SetActive(false);
                 gameController.ActivateZGame();
+                
             }
         }
     }
@@ -38,7 +40,7 @@ public class DeactivateOnPlayerCollision : MonoBehaviour
         // Set looping to false
         var main = crystalParticleSystem.main;
         main.loop = false;
-        main.duration = 1f;
+        main.duration = .5f;
         crystalParticleSystem.Play();
         // Wait for the duration and deactivate the game object
         yield return new WaitForSeconds(main.duration);

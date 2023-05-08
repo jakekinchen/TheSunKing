@@ -4919,7 +4919,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 7.93
+  m_Radius: 8.95
   m_Center: {x: 0, y: -0.000091552734, z: 0.0000076293945}
 --- !u!114 &427773135688165818
 MonoBehaviour:
@@ -4937,6 +4937,8 @@ MonoBehaviour:
   crystalParticleSystem2: {fileID: 0}
   useAnimation: 1
   popAnimationDuration: 1
+  isPuzzleCrystal: 0
+  gameController: {fileID: 0}
 --- !u!1001 &4638235592049805447
 PrefabInstance:
   m_ObjectHideFlags: 0

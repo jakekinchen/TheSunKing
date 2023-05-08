@@ -5,13 +5,14 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public GameObject puzzleCanvas;
-    public GameObject xGame;
+   // public GameObject xGame;
     public GameObject zGame;
     public Camera playerCamera;
     public Camera puzzleCamera;
+    public GameObject player;
 
-    public bool zGameActive = false;
-    public bool xGameActive = false;
+    //public bool zGameActive = false;
+    //public bool xGameActive = false;
 
     //public GameManager gameManager; // Commented out
 
@@ -22,67 +23,70 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        
-        puzzleCanvas.SetActive(false);
-        zGame.SetActive(false);
-        xGame.SetActive(false);
+        //zGame.SetActive(false);
         puzzleCamera.enabled = false;
+        puzzleCanvas.SetActive(false);
+        
+        //xGame.SetActive(false);
+        
         
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z) && !xGameActive)
+        if (Input.GetKeyDown(KeyCode.Z))
         {
-            zGameActive = !zGameActive;
+            //zGameActive = !zGameActive;
             gameActive = !gameActive;
             ToggleGame(gameActive);
-            zGame.SetActive(zGameActive);
-        }if (Input.GetKeyDown(KeyCode.X) && !zGameActive)
+            //zGame.SetActive(zGameActive);
+        }if (Input.GetKeyDown(KeyCode.X))
         {
-            xGameActive = !xGameActive;
+           // xGameActive = !xGameActive;
             gameActive = !gameActive;
             ToggleGame(gameActive);
-            xGame.SetActive(xGameActive);
+           // xGame.SetActive(xGameActive);
         }
-
     }
 
     public void ActivateZGame()
     {
-        zGameActive = true;
-        gameActive = true;
+        //zGameActive = !zGameActive;
+        gameActive = !gameActive;
         ToggleGame(gameActive);
-        zGame.SetActive(zGameActive);
+       // zGame.SetActive(gameActive);
+        Debug.Log("Z Game Activated from GameController");
     }
 
     public void ActivateWin()
     {
-        Debug.Log("Win activated");
-        zGameActive = false;
-        xGameActive = false;
-        gameActive = false;
+        //zGameActive = !zGameActive;
+        gameActive = !gameActive;
         ToggleGame(false);
-        zGame.SetActive(false);
-        xGame.SetActive(false);
+        //zGame.SetActive(gameActive);
+        Debug.Log("Win Activated from GameController");
+        player.GetComponent<PlayerController>().ActivateSunCrystal();
     }
 
     void ToggleGame(bool active)
     {
         puzzleCanvas.SetActive(active);
+        //zGame.SetActive(active);
+
         puzzleCamera.enabled = active;
         playerCamera.enabled = !active;
         FindThingsAndDeactivate(active);
         simulation.GetComponent<NBodySimulation>().pauseSimulation = active;
+        player.SetActive(!active);
         simulation.SetActive(!active);
         ship.SetActive(!active);
         if (active)
         {
-            Debug.Log("Game is active");
+            Debug.Log("Time set to 0");
            Time.timeScale = 0;
         }else
         {
-            Debug.Log("Game is inactive");
+            Debug.Log("Time set to 1");
             Time.timeScale = 1;
         }
         
