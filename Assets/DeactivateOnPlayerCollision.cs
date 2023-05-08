@@ -7,6 +7,8 @@ public class DeactivateOnPlayerCollision : MonoBehaviour
     [SerializeField] public ParticleSystem crystalParticleSystem2;
     [SerializeField] private bool useAnimation = true;
     [SerializeField] private float popAnimationDuration = 1f;
+    [SerializeField] private bool isPuzzleCrystal = false;
+    [SerializeField] GameController gameController;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -20,6 +22,10 @@ public class DeactivateOnPlayerCollision : MonoBehaviour
             {
                 StartCoroutine(stopLoopingAndDeactivate());
                 //gameObject.SetActive(false);
+            }
+            if (isPuzzleCrystal)
+            {
+                gameController.ActivateZGame();
             }
         }
     }

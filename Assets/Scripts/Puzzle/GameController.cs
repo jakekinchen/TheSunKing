@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    public GameObject puzzle1Canvas;
+    public GameObject puzzleCanvas;
     public GameObject xGame;
     public GameObject zGame;
     public Camera playerCamera;
-    public Camera puzzle1Camera;
+    public Camera puzzleCamera;
 
     public bool zGameActive = false;
     public bool xGameActive = false;
@@ -23,10 +23,10 @@ public class GameController : MonoBehaviour
     void Start()
     {
         
-        puzzle1Canvas.SetActive(false);
+        puzzleCanvas.SetActive(false);
         zGame.SetActive(false);
         xGame.SetActive(false);
-        puzzle1Camera.enabled = false;
+        puzzleCamera.enabled = false;
         
     }
 
@@ -48,16 +48,29 @@ public class GameController : MonoBehaviour
 
     }
 
+    public void ActivateZGame()
+    {
+        zGameActive = true;
+        gameActive = true;
+        ToggleGame(gameActive);
+        zGame.SetActive(zGameActive);
+    }
+
     public void ActivateWin()
     {
         Debug.Log("Win activated");
+        zGameActive = false;
+        xGameActive = false;
+        gameActive = false;
         ToggleGame(false);
+        zGame.SetActive(false);
+        xGame.SetActive(false);
     }
 
     void ToggleGame(bool active)
     {
-        puzzle1Canvas.SetActive(active);
-        puzzle1Camera.enabled = active;
+        puzzleCanvas.SetActive(active);
+        puzzleCamera.enabled = active;
         playerCamera.enabled = !active;
         FindThingsAndDeactivate(active);
         simulation.GetComponent<NBodySimulation>().pauseSimulation = active;
