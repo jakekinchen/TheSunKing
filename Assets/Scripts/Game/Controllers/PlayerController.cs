@@ -35,10 +35,7 @@ public class PlayerController : GravityObject
     public float maxEnergy = 100;
     public float minEnergy = 0;
     public float energyRechargeDelay = 1;
-    public float energyRechargeDelayTimer = 0;
-    public float energyRechargeDelayTimerMax = 1;
-    public float energyRechargeDelayTimerMin = 0;
-    public float energyRechargeDelayTimerReset = 0;
+ 
 
     [Header("Energy System")]
     public GameObject sun;
@@ -213,6 +210,7 @@ public class PlayerController : GravityObject
     
     }else if (IsPlayerOutsideAtmosphere() && !canEscapeAtmosphere){
         isOutsideEarth = true;
+        Debug.Log("Player is outside earth");
         energy = 0;
         float sqrDst = (celestialBody.Position - rb.position).sqrMagnitude;
         Vector3 forceDir = (celestialBody.Position - rb.position).normalized;
@@ -230,7 +228,7 @@ public class PlayerController : GravityObject
             // Flying mode
     if (Input.GetKey(KeyCode.Space) && energy > 3)
     {
-        energy -= 0.1f;
+        //energy -= 0.1f;
         rb.AddForce(transform.up * flyForce * 0.07f, ForceMode.VelocityChange);
         //Debug.Log("Flying");
         isFlying = true;
@@ -503,7 +501,7 @@ void FixedUpdate()
             }
             else
             {
-                energy -= 0.05f;
+               // energy -= 0.05f;
             }
             energy = Mathf.Clamp(energy, minEnergy, maxEnergy);
 
