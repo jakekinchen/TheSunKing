@@ -5,50 +5,81 @@ using UnityEngine.UI;
 
 public class eyePuzzle : MonoBehaviour
 {
-    // public Button leftButton;
-    // public Button middleButton;
-    // public Button rightButton;
     public Image leftEye;
     public Image middleEye;
     public Image rightEye;
     public Sprite openEyeSprite;
     public Sprite closedEyeSprite;
+    public Text winText;
+    public GameObject winPanel; 
+
+    private bool[] eyeStates;
 
     void Start()
     {
+        eyeStates = new bool[3]; // false means closed, true means open
         CloseEyes();
-        // leftButton.onClick.AddListener(() => OpenEyes(true, false, true));
-        // middleButton.onClick.AddListener(() => OpenEyes(true, true, false));
-        // rightButton.onClick.AddListener(() => OpenEyes(false, false, true));
+        winText.enabled = false;
+       winPanel.SetActive(false);
     }
 
-     public void OpenEye(int eyeIndex)
+    public void ToggleEye(int eyeIndex)
     {
-        switch (eyeIndex)
+        if (eyeIndex == 0)
         {
-            case 0:
-                leftEye.sprite = openEyeSprite;
-                rightEye.sprite = openEyeSprite;
-                break;
-            case 1:
-                leftEye.sprite = openEyeSprite;
-                middleEye.sprite = openEyeSprite;
-                break;
-            case 2:
-                rightEye.sprite = openEyeSprite;
-                break;
+            eyeStates[0] = !eyeStates[0];
+            eyeStates[2] = !eyeStates[2];
+        }
+        else if (eyeIndex == 1)
+        {
+            eyeStates[0] = !eyeStates[0];
+            eyeStates[1] = !eyeStates[1];
+        }
+        else
+        {
+            eyeStates[2] = !eyeStates[2];
+        }
+
+        UpdateAllEyes();
+        CheckWinCondition();
+    }
+
+    void UpdateAllEyes()
+    {
+        for (int i = 0; i < eyeStates.Length; i++)
+        {
+            UpdateEye(i);
         }
     }
 
-    // void SetEyeState(Image eye, bool open)
-    // {
-    //     eye.sprite = open ? closedEyeSprite : openEyeSprite;
-    // }
-
-   public void CloseEyes()
+    void UpdateEye(int eyeIndex)
     {
-        leftEye.sprite = closedEyeSprite;
-    middleEye.sprite = closedEyeSprite;
-    rightEye.sprite = closedEyeSprite;
+        Image eye = eyeIndex == 0 ? leftEye : eyeIndex == 1 ? middleEye : rightEye;
+        eye.sprite = eyeStates[eyeIndex] ? openEyeSprite : closedEyeSprite;
+    }
+
+    void CloseEyes()
+    {
+        for (int i = 0; i < eyeStates.Length; i++)
+        {
+            eyeStates[i] = false;
+            UpdateEye(i);
+        }
+    }
+
+    void CheckWinCondition()
+    {
+        bool allEyesOpen = true;
+        for (int i = 0; i < eyeStates.Length; i++)
+        {
+            if (!eyeStates[i])
+            {
+                allEyesOpen = false;
+                break;
+            }
+        }
+
+        winText.enabled = allEyesOpen;
+        winPanel.SetActive(allEyesOpen);
     }
 }

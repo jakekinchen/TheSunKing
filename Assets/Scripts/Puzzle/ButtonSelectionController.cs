@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class ButtonSelectionController : MonoBehaviour
 {
-    
     public Button firstSelectedButton;
     public Color normalColor = Color.white;
     public Color selectedColor = Color.yellow;
@@ -14,29 +13,39 @@ public class ButtonSelectionController : MonoBehaviour
     public Button rightButton;
 
     private EventSystem eventSystem;
-    private eyePuzzle bingbong;
+    private eyePuzzle eyeController;
 
     void Start()
     {
-         eventSystem = EventSystem.current;
-    bingbong = GetComponent<eyePuzzle>(); // assuming eyePuzzle script is attached to the same GameObject
-    SelectFirstButton();
-
+        eventSystem = EventSystem.current;
+        eyeController = FindObjectOfType<eyePuzzle>();
+        SelectFirstButton();
     }
 
     void Update()
     {
-        leftButton.onClick.AddListener(() => bingbong.OpenEye(0));
-        middleButton.onClick.AddListener(() => bingbong.OpenEye(1));
-        rightButton.onClick.AddListener(() => bingbong.OpenEye(2));
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
         {
-            bingbong.OpenEye(3);
-            ExecuteEvents.Execute(eventSystem.currentSelectedGameObject, new BaseEventData(eventSystem), ExecuteEvents.submitHandler);
+            GameObject selectedButton = eventSystem.currentSelectedGameObject;
+
+            if (selectedButton == leftButton.gameObject)
+            {
+                eyeController.ToggleEye(0);
+            }
+            else if (selectedButton == middleButton.gameObject)
+            {
+                eyeController.ToggleEye(1);
+            }
+            else if (selectedButton == rightButton.gameObject)
+            {
+                eyeController.ToggleEye(2);
+            }
+
+            ExecuteEvents.Execute(selectedButton, new BaseEventData(eventSystem), ExecuteEvents.submitHandler);
         }
 
         UpdateButtonColors();
-           }
+    }
 
     void SelectFirstButton()
     {
@@ -63,6 +72,4 @@ public class ButtonSelectionController : MonoBehaviour
             button.colors = colorBlock;
         }
     }
-
-    
 }
