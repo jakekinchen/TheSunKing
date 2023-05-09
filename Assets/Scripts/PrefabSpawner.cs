@@ -33,6 +33,7 @@ public class PrefabSpawner : MonoBehaviour
 
     private void Awake()
     {
+        if (terrainObject == null || celestialBodyGenerator == null) return;
         MeshCollider terrainMeshCollider = terrainObject.GetComponent<MeshCollider>();
         PoissonDiskSampling sampling = gameObject.AddComponent<PoissonDiskSampling>();
         sampling.Initialize(terrainMeshCollider); // Fix this line

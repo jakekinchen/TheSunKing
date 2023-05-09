@@ -162,14 +162,24 @@ Vector3 OptimizedAvoidanceRays()
             acceleration += surfaceSeparationForce;
         }
         float currentHeight = Vector3.Distance(position, planet.position);
-    if (currentHeight < minHeight || currentHeight > maxHeight)
+        if (currentHeight < minHeight || currentHeight > maxHeight)
+{
+    float desiredHeight = Mathf.Clamp(currentHeight, minHeight, maxHeight);
+    Vector3 desiredHeightDirection = (position - planet.position).normalized * desiredHeight;
+    Vector3 targetHeightPosition = planet.position + desiredHeightDirection;
+    float heightDifference = Mathf.Abs(currentHeight - desiredHeight);
+    float dampingFactor = Mathf.Clamp(heightDifference / (maxHeight - minHeight), 0.1f, 1f);
+    Vector3 heightSteerForce = SteerTowards(targetHeightPosition - position) * settings.heightSteerWeight * dampingFactor;
+
+    if (currentHeight < 200)
     {
-        float desiredHeight = Mathf.Clamp(currentHeight, minHeight, maxHeight);
-        Vector3 desiredHeightDirection = (planet.position - position).normalized * desiredHeight;
-        Vector3 targetHeightPosition = planet.position - desiredHeightDirection;
-        Vector3 heightSteerForce = SteerTowards(targetHeightPosition - position) * settings.heightSteerWeight;
-        acceleration += heightSteerForce;
+    Debug.Log($"Boid name: {this.gameObject.name} Current height: {currentHeight}, Desired height direction: {desiredHeightDirection}, Target height position: {targetHeightPosition}, Height steer force: {heightSteerForce}");
+    Debug.DrawRay(position, heightSteerForce, Color.green, 0.1f);
     }
+
+    acceleration += heightSteerForce;
+}
+
         velocity += acceleration * Time.deltaTime;
         float speed = velocity.magnitude;
         Vector3 dir = velocity / speed;

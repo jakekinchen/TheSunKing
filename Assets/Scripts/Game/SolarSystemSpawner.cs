@@ -24,12 +24,11 @@ public class SolarSystemSpawner : MonoBehaviour {
 				continue;
 			}
 
-			if (uncheckOnlyOnRegeneration && body.name != "Humble Abode")
+			if (uncheckOnlyOnRegeneration && body.name != "Humble Abode" ) 
         {
             continue;
         }
-
-
+				
 			BodyPlaceholder placeholder = body.gameObject.GetComponentInChildren<BodyPlaceholder> ();
 			var template = placeholder.bodySettings;
 
@@ -37,6 +36,7 @@ public class SolarSystemSpawner : MonoBehaviour {
 
 			GameObject holder = new GameObject ("Body Generator");
 			var generator = holder.AddComponent<CelestialBodyGenerator> ();
+			Debug.Log ("Generating " + body.name + "...");
 			generator.transform.parent = body.transform;
 			generator.gameObject.layer = body.gameObject.layer;
 			generator.transform.localRotation = Quaternion.identity;
@@ -45,7 +45,7 @@ public class SolarSystemSpawner : MonoBehaviour {
 			generator.resolutionSettings = resolutionSettings;
 
 			generator.body = template;
-
+			
 		}
 
 		Debug.Log ("Generation time: " + sw.ElapsedMilliseconds + " ms.");

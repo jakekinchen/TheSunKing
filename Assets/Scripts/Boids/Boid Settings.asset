@@ -32,4 +32,4 @@ MonoBehaviour:
   boundsRadius: 3
   avoidCollisionWeight: 22.4
   collisionAvoidDst: 5
-  heightSteerWeight: 15.05
+  heightSteerWeight: 15.13

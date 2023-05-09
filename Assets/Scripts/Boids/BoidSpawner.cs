@@ -43,8 +43,9 @@ public class BoidSpawner : MonoBehaviour {
             }else{
                 boid.SetHeight(landHeightMin, landHeightMax);
             }
-            //Debug.Log("Planet: " + boid.planet);
+            
         }
+        Debug.Log(spawnCount + " "+ prefab +" boids spawned");
     }
 
     private void OnDrawGizmos () {
