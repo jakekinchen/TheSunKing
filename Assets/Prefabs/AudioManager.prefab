@@ -44,7 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 410a5e378a4a7ee49938e93fb544d04c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mixerGroup: {fileID: 0}
+  mixerGroup: {fileID: -3715322184854909700, guid: b9cc7a8850a6c441ab93137e993eb9a4,
+    type: 2}
   sounds:
   - name: Theme
     clip: {fileID: 8300000, guid: e7559951dad344fa7a0d9c553300bd7f, type: 3}
