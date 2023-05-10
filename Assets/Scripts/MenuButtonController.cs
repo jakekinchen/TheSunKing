@@ -15,6 +15,10 @@ public class MenuButtonController : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        if (index == null)
+        {
+            index = 0;
+        }
     }
 
     // Update is called once per frame

@@ -20,6 +20,20 @@ public class MenuButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (menuButtonController == null)
+        {
+            menuButtonController = transform.parent.GetComponent<MenuButtonController>();
+            menuButtonController.index = 0;
+        }
+        if(menuButtonController.index == null)
+        {
+            // menuButtonController = transform.parent.GetComponent<MenuButtonController>();
+            // animator = transform.GetComponent<Animator>();
+            // animatorFunction = transform.GetComponent<AnimatorFunction>();
+            Debug.Log("MenuButtonController index is null in "+ gameObject.name);
+        }else if (thisIndex == null){
+            Debug.Log("thisIndex is null in "+ gameObject.name);
+        }
         if (menuButtonController.index == thisIndex)
         {
             animator.SetBool("selected", true);

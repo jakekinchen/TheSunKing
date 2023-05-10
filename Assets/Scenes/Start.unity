@@ -597,6 +597,11 @@ PrefabInstance:
       objectReference: {fileID: 68761481}
     - target: {fileID: 5885100078267195221, guid: d28c896399462414fbe9429d2b7f75e2,
         type: 3}
+      propertyPath: settings
+      value: 
+      objectReference: {fileID: 120217666}
+    - target: {fileID: 5885100078267195221, guid: d28c896399462414fbe9429d2b7f75e2,
+        type: 3}
       propertyPath: thisIndex
       value: 2
       objectReference: {fileID: 0}
@@ -604,7 +609,7 @@ PrefabInstance:
         type: 3}
       propertyPath: animatorFunction
       value: 
-      objectReference: {fileID: 7685407415148320147}
+      objectReference: {fileID: 1513654426}
     - target: {fileID: 5885100078267195221, guid: d28c896399462414fbe9429d2b7f75e2,
         type: 3}
       propertyPath: menuButtonController
@@ -2054,7 +2059,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 0
   keyDown: 0
-  maxIndex: 2
+  maxIndex: 4
   audioSource: {fileID: 331155009}
 --- !u!82 &331155009
 AudioSource:
@@ -4212,7 +4217,7 @@ PrefabInstance:
     - target: {fileID: 5885100078267195221, guid: d28c896399462414fbe9429d2b7f75e2,
         type: 3}
       propertyPath: thisIndex
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5885100078267195221, guid: d28c896399462414fbe9429d2b7f75e2,
         type: 3}
@@ -4259,8 +4264,7 @@ PrefabInstance:
       propertyPath: m_PresetInfoIsWorld
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5885100078267195221, guid: d28c896399462414fbe9429d2b7f75e2, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d28c896399462414fbe9429d2b7f75e2, type: 3}
 --- !u!4 &832725600 stripped
 Transform:
@@ -6581,6 +6585,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
+--- !u!114 &1513654426 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2487165822367803715, guid: d28c896399462414fbe9429d2b7f75e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 68761479}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513654421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a213e336a2f814f6aae08f6ce8dac368, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1542391945
 GameObject:
   m_ObjectHideFlags: 0
@@ -9334,6 +9350,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2137212903}
   - component: {fileID: 2137212904}
+  - component: {fileID: 2137212905}
   m_Layer: 0
   m_Name: MenuButtons
   m_TagString: Untagged
@@ -9376,6 +9393,24 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &2137212905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2137212902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ec85d3f5f1743da9c66516f134b052, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuButtonController: {fileID: 0}
+  animator: {fileID: 0}
+  animatorFunction: {fileID: 0}
+  thisIndex: 0
+  waitTime: 0
+  settings: {fileID: 0}
 --- !u!1001 &6781786964532493269
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9672,6 +9707,11 @@ PrefabInstance:
       propertyPath: animator
       value: 
       objectReference: {fileID: 7685407415148320148}
+    - target: {fileID: 5885100078267195221, guid: d28c896399462414fbe9429d2b7f75e2,
+        type: 3}
+      propertyPath: settings
+      value: 
+      objectReference: {fileID: 120217666}
     - target: {fileID: 5885100078267195221, guid: d28c896399462414fbe9429d2b7f75e2,
         type: 3}
       propertyPath: animatorFunction
