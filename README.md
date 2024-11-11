@@ -63,20 +63,6 @@ In **The Sun King**, you navigate through various stages of an abandoned solar s
 - **Platform:** PC (Windows/macOS) [Adjust as needed]
 - **Engine:** Unity 3D
 
-### Installation
-
-1. **Download the Game:**
-   - [Link to download or purchase the game]
-
-2. **Install:**
-   - Follow the installation instructions provided with your download.
-
-3. **Launch:**
-   - Open the game and embark on your journey as the Sun King.
-
-## Contact
-
-For more information, feedback, or support, please reach out to us at [your email address] or visit our [website/social media links].
 
 ---
 
