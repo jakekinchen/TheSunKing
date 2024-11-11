@@ -1,12 +1,9 @@
 # The Sun King
 
-<img width="1440" alt="Screenshot 2024-11-10 at 4 27 47 PM" src="https://github.com/user-attachments/assets/ea82ecf4-4a00-4dd9-9296-fafaac4f6eda">
-
-<img width="1440" alt="Screenshot 2024-11-10 at 3 52 57 PM" src="https://github.com/user-attachments/assets/90fdbbc0-dedc-4794-a3ea-4ce70b0dc712">
-
-<img width="1440" alt="Screenshot 2024-11-10 at 3 50 09 PM" src="https://github.com/user-attachments/assets/496020dd-1224-473a-8516-20f0104f604c">
-![Screenshot-2024-11-09-at-12 49 11 PM](https://github.com/user-attachments/assets/2c4ca330-f4d0-4dcd-8b17-def1d87135ed)
-
+![Screenshot-2024-11-10-at-4 27 47 PM](https://github.com/user-attachments/assets/baa40d6a-6d7b-4107-ad2e-43049a06a519)
+![Screenshot 2024-11-10 at 3 47 19 PM](https://github.com/user-attachments/assets/1cf530d4-b26e-4fb9-b5f4-07eabb944bae)
+![Screenshot-2024-11-09-at-12 49 11 PM](https://github.com/user-attachments/assets/bea99736-e74a-4e6c-967a-069e78b2caf5)
+![Screenshot-2024-11-10-at-3 52 57 PM](https://github.com/user-attachments/assets/45aec52c-b78c-458f-844e-34584ba45d24)
 
 ## Overview
 
